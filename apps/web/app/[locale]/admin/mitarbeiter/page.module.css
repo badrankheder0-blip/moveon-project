@@ -1,0 +1,9 @@
+/* The prototype's `wide` switch and `style-hover` rules for Employees; everything else is inline. */
+
+.head { display: flex; }
+.red:hover { background: #b7122b !important; border-color: #b7122b !important; }
+.tint:hover { background: #fff6f6 !important; }
+
+@media (max-width: 899px) {
+  .head { display: none; }
+}

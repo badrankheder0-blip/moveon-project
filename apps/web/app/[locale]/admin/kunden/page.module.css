@@ -1,0 +1,7 @@
+/* The prototype's `wide` switch for Customers: the column titles show from 900px up. */
+
+.head { display: flex; }
+
+@media (max-width: 899px) {
+  .head { display: none; }
+}

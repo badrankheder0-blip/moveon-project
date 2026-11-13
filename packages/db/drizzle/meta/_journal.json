@@ -1,0 +1,125 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1789202981577,
+      "tag": "0000_cool_virginia_dare",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789214090249,
+      "tag": "0001_bored_expediter",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790151850247,
+      "tag": "0002_real_betty_brant",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1790428885871,
+      "tag": "0003_rich_wiccan",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1790429006526,
+      "tag": "0004_flippant_avengers",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1790594543567,
+      "tag": "0005_wooden_the_leader",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1790602002979,
+      "tag": "0006_logo_setting_default",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1790695310390,
+      "tag": "0007_drop_wrong_homepage_images",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1790697996093,
+      "tag": "0008_homepage_139_676_images",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1790700849115,
+      "tag": "0009_chat_customer_read_at",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1791292942517,
+      "tag": "0010_brand_lockup_and_mark",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1792935137785,
+      "tag": "0011_admin_dashboard",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1792936398995,
+      "tag": "0012_pricing_v2",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1792997424097,
+      "tag": "0013_user_saved_addresses",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1794309610583,
+      "tag": "0014_overjoyed_turbo",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1794310570848,
+      "tag": "0015_fantastic_marvex",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1794310592950,
+      "tag": "0016_special_items_from_rates",
+      "breakpoints": true
+    }
+  ]
+}

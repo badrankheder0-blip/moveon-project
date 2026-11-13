@@ -1,0 +1,29 @@
+/* The prototype's `style-hover` rules for Quotes & visits; everything else is inline. */
+
+.red:hover:not(:disabled) { background: #b7122b !important; border-color: #b7122b !important; }
+.line:hover:not(:disabled) { border-color: #252b28 !important; }
+.dark:hover:not(:disabled) { background: #252b28 !important; color: #ffffff !important; }
+.del:hover:not(:disabled) { background: #fff1f3 !important; color: #b7122b !important; }
+
+/* The source under the quote number reads as text; it is a select only for the team. */
+.src {
+  appearance: none;
+  field-sizing: content;
+  border: 0;
+  padding: 0 14px 0 0;
+  background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23737870' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right center;
+  font-size: 11.5px;
+  color: #737870;
+  cursor: pointer;
+}
+[dir="rtl"] .src { padding: 0 0 0 14px; background-position: left center; }
+:global(.adm) .src:focus { box-shadow: none !important; text-decoration: underline; }
+
+/* The quote lines: the prototype's five columns; in a narrow pane the
+   description takes its own row above the numbers instead of shrinking to nothing. */
+.lines { container-type: inline-size; }
+.lineRow { display: grid; grid-template-columns: minmax(0, 1fr) 62px 92px 84px 28px; gap: 8px; align-items: center; }
+@container (max-width: 400px) {
+  .lineRow { grid-template-columns: 62px 92px minmax(0, 1fr) 28px; }
+  .lineRow > :first-child { grid-column: 1 / -1; }
+}

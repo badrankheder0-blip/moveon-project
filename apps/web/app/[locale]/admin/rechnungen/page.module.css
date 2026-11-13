@@ -1,0 +1,59 @@
+/* What the prototype draws with style-hover and its `wide` switch; the rest is inline. */
+
+.head {
+  display: flex;
+}
+
+@media (max-width: 899px) {
+  .head {
+    display: none;
+  }
+}
+
+/*
+ * Wide: the header and every row share one grid, so each label sits over its
+ * column (the prototype's flex row let the customer column grow once the
+ * buttons wrapped, which pushed the dates out from under their labels). The
+ * buttons take the row's second line, at the end, as in the prototype.
+ */
+@media (min-width: 900px) {
+  .head,
+  .row {
+    display: grid !important;
+    grid-template-columns: 120px minmax(180px, 1fr) 100px 100px 100px 140px;
+    column-gap: 14px !important;
+  }
+
+  .head > *,
+  .row > * {
+    min-width: 0;
+  }
+
+  .row > :last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+.outline:hover {
+  border-color: #252b28 !important;
+}
+
+.pay:hover {
+  background: #b7122b !important;
+  border-color: #b7122b !important;
+}
+
+.create:hover {
+  background: #fff6f6 !important;
+}
+
+.field:focus {
+  outline: none;
+  border-color: #d71635 !important;
+  box-shadow: 0 0 0 3px #00000012;
+}
+
+.field:read-only {
+  background: #fafaf7 !important;
+  color: #737870 !important;
+}

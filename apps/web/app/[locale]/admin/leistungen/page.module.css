@@ -1,0 +1,23 @@
+/* Hover states the prototype writes as `style-hover`, and the general card's
+   language grid, which follows the card's own width rather than the window's. */
+
+.general { container-type: inline-size; }
+.langGrid { display: grid; gap: 14px 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@container (min-width: 880px) { .langGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@container (max-width: 460px) { .langGrid { grid-template-columns: minmax(0, 1fr); } }
+
+.redBtn:hover { background: #b7122b !important; border-color: #b7122b !important; }
+.lineBtn:hover { background: #fff6f6 !important; }
+.inlineEdit:hover { border-color: #d6d9d1 !important; }
+.row:hover { border-color: #d71635 !important; }
+.typeBtn:hover { border-color: #d71635 !important; }
+.dashedType:hover { border-color: #d71635 !important; background: #ffffff !important; }
+.ghost:hover { background: #f5f5f0 !important; }
+.danger:hover { background: #fff6f6 !important; color: #d71635 !important; }
+.deleteSvc:hover { background: #fff6f6 !important; }
+
+.flowRow { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
+.stepNav { flex: 0 1 230px; min-width: 200px; display: flex; flex-direction: column; gap: 5px; position: sticky; top: 96px; }
+@media (max-width: 899px) {
+  .stepNav { position: static; flex: 1 1 100%; }
+}

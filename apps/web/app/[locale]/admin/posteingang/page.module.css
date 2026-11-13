@@ -1,0 +1,5 @@
+/* The prototype's `style-hover` rules for the inbox; everything else is inline. */
+
+.red:hover { background: #b7122b !important; border-color: #b7122b !important; color: #ffffff !important; }
+.line:hover { border-color: #252b28 !important; }
+.quiet:hover { color: #d71635 !important; }

@@ -1,0 +1,56 @@
+/*
+ * The admin prototype's hover states and breakpoints for the orders,
+ * calendar and live-map screens. Everything else is inline, as the prototype
+ * writes it.
+ */
+
+.row:hover { background: #fbfbf8 !important; }
+.redBtn:hover:not(:disabled) { background: #b7122b !important; border-color: #b7122b !important; }
+.lineBtn:hover:not(:disabled) { background: #fff6f6 !important; }
+.navBtn:hover { border-color: #d71635 !important; }
+.chip:hover { filter: brightness(.96); }
+.lineInput:hover { border-color: #e3e5de !important; }
+.lineInput:focus { border-color: #d71635 !important; background: #ffffff !important; }
+.remove:hover { background: #fff6f6 !important; color: #d71635 !important; }
+.approve:hover { background: #2f5a47 !important; }
+.mapCard:hover { border-color: #bfc4bc !important; }
+.ghostIcon:hover { background: #f1f1ea !important; }
+.callBtn:hover { border-color: #252b28 !important; }
+.loadMore:hover { background: #fbfbf8 !important; color: #d71635 !important; }
+
+/* Narrow: < 900px, as everywhere in the dashboard. */
+.wideOnly { display: flex; }
+.narrowOnly { display: none; }
+@media (max-width: 899px) {
+  .wideOnly { display: none !important; }
+  .narrowOnly { display: flex !important; }
+}
+
+/*
+ * The order page runs two columns once the content column is wide enough:
+ * the prototype switches at a 1200px viewport (1020px with the sidebar
+ * collapsed), which is the same ~836px of content either way.
+ */
+.detailWrap { container-type: inline-size; }
+.detailGrid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
+.detailAside { position: static; top: 96px; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+@container (min-width: 836px) {
+  .detailGrid { grid-template-columns: minmax(0, 1fr) 360px; }
+  .detailAside { position: sticky; }
+}
+
+/* The live map: map and list side by side from a 1100px viewport (~736px of content). */
+.mapWrap { container-type: inline-size; }
+.mapGrid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
+.mapBox { height: 440px; }
+@container (min-width: 736px) {
+  .mapGrid { grid-template-columns: minmax(0, 1fr) 380px; }
+  .mapBox { height: max(560px, calc(100vh - 210px)); }
+}
+
+@keyframes livePulse {
+  0% { box-shadow: 0 0 0 0 #3f9e6355; }
+  70% { box-shadow: 0 0 0 7px #3f9e6300; }
+  100% { box-shadow: 0 0 0 0 #3f9e6300; }
+}
+.liveDot { animation: livePulse 2s infinite; }

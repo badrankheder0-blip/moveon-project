@@ -1,0 +1,52 @@
+/*
+ * Hover and focus states of the website screens. The prototype writes these
+ * as `style-hover` next to its inline styles; inline styles cannot carry a
+ * :hover, so they live here and the values stay the prototype's.
+ */
+
+.back {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  padding-block: 0;
+  padding-inline: 6px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #737870;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.back:hover { background: #ffffff; color: #252b28; }
+
+.tile { transition: border-color .15s, transform .15s; }
+.tile:hover { border-color: #d71635 !important; transform: translateY(-2px); }
+
+.rail:hover { background: #fafaf7 !important; }
+.pill:hover { background: #e3e5de !important; }
+.outline:hover { border-color: #252b28 !important; }
+.danger:hover { border-color: #b7122b !important; }
+.soft:hover { background: #f5f5f0 !important; }
+.softDark:hover { background: #f5f5f0 !important; color: #252b28 !important; }
+.eye:hover { background: #f1f1ea !important; }
+.dot:hover { color: #d71635 !important; }
+.rowX:hover { background: #fff6f6 !important; color: #d71635 !important; }
+.chip:hover { border-color: #d71635 !important; background: #ffffff !important; }
+
+/* Page editor fields: the prototype's red focus ring. */
+.field { transition: border-color .15s, box-shadow .15s; }
+.field:focus { border-color: #d71635 !important; outline: none; box-shadow: 0 0 0 3px #d716351a !important; }
+
+/* Homepage editor: text drawn on the layout, outlined on hover. */
+.ed { border: 1px dashed transparent; }
+.ed:hover { border-color: #bfc4bc; }
+.edLight { border: 1px dashed transparent; }
+.edLight:hover { border-color: #ffffff99; }
+.ed.is, .edLight.is { border-style: solid; border-color: #ffcb08; }
+.url.is { border-color: #ffcb08 !important; }
+
+.railRow:hover { background: #fafaf7; }
+
+.areaAuto { field-sizing: content; }

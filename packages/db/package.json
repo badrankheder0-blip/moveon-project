@@ -1,0 +1,53 @@
+{
+  "name": "@mon/db",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./schema": {
+      "types": "./dist/schema/index.d.ts",
+      "default": "./dist/schema/index.js"
+    },
+    "./site-defaults": {
+      "types": "./dist/site-defaults.d.ts",
+      "default": "./dist/site-defaults.js"
+    },
+    "./image-content": {
+      "types": "./dist/image-content.d.ts",
+      "default": "./dist/image-content.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "check-types": "tsc --noEmit",
+    "generate": "tsc && drizzle-kit generate",
+    "migrate": "tsc && tsx src/migrate.ts",
+    "studio": "drizzle-kit studio",
+    "seed": "tsc && tsx src/seed.ts",
+    "dump": "tsc && tsx src/dump.ts",
+    "restore": "tsc && tsx src/restore.ts",
+    "seed:home": "tsx src/seed-home.ts",
+    "create-user": "tsx src/create-user.ts"
+  },
+  "dependencies": {
+    "@mon/config": "workspace:*",
+    "drizzle-orm": "^0.38.3",
+    "postgres": "^3.4.5",
+    "@mon/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "@mon/typescript-config": "workspace:*",
+    "argon2": "^0.41.1",
+    "drizzle-kit": "^0.30.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.9.2"
+  }
+}

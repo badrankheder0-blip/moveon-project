@@ -1,0 +1,10 @@
+/* The prototype's `wide` switch and `style-hover` rules for User management; everything else is inline. */
+
+.head { display: flex; }
+.red:hover { background: #b7122b !important; border-color: #b7122b !important; }
+.icon:hover { background: #f5f5f0 !important; color: #252b28 !important; }
+.trash:hover { background: #fff6f6 !important; color: #d71635 !important; }
+
+@media (max-width: 899px) {
+  .head { display: none; }
+}

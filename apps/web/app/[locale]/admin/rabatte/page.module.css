@@ -1,0 +1,3 @@
+.redBtn:hover { background: #b7122b !important; border-color: #b7122b !important; }
+.trash:hover { background: #fff6f6 !important; color: #d71635 !important; }
+@media (max-width: 899px) { .wideOnly { display: none !important; } }
