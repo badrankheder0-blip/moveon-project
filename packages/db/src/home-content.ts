@@ -228,8 +228,6 @@ export const HOME_CONTENT: ContentSeed[] = [
   row("home", "stats.1.label", "text", "Numbers — 1: label", 171, { de: "Umzüge", en: "moves", ar: "عملية نقل", tr: "taşınma" }),
   row("home", "stats.2.value", "text", "Numbers — 2: figure (counts up from zero)", 172, same("98%")),
   row("home", "stats.2.label", "text", "Numbers — 2: label", 173, { de: "pünktlich", en: "on time", ar: "في الموعد", tr: "zamanında" }),
-  row("home", "stats.3.value", "text", "Numbers — 3: figure (counts up from zero)", 174, { de: "7 Tage", en: "7 days", ar: "7 أيام", tr: "7 gün" }),
-  row("home", "stats.3.label", "text", "Numbers — 3: label", 175, { de: "Service", en: "support", ar: "دعم", tr: "destek" }),
   row("home", "myths.eyebrow", "text", "Expectations — small label", 176, { de: "WAS VIELE ERWARTEN", en: "WHAT PEOPLE EXPECT", ar: "ما يتوقّعه الناس", tr: "İNSANLARIN BEKLEDİĞİ" }),
   row("home", "myths.title", "text", "Expectations — title", 177, { de: "Was Sie vielleicht erwarten und was tatsächlich passiert.", en: "What you might expect, and what actually happens.", ar: "ما قد تتوقّعه، وما يحدث فعلاً.", tr: "Ne bekleyebileceğiniz ve gerçekte ne olduğu." }),
   row("home", "myths.sub", "text", "Expectations — intro", 178, { de: "Drehen Sie die Karten um.", en: "Turn the cards over.", ar: "اقلب البطاقات.", tr: "Kartları çevirin." }),
