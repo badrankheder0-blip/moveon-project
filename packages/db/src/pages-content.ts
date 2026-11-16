@@ -799,7 +799,7 @@ export const PAGES_CONTENT: ContentSeed[] = [
   row("page-locations", "plz.noLinkHref", "text", "Postcode check — not covered: link: address", 21, same("/kontakt")),
   row("page-locations", "plz.bad", "text", "Postcode check — not five digits", 22, { de: "Geben Sie eine fünfstellige Postleitzahl ein.", en: "Enter a 5-digit postcode.", ar: "أدخل رمزاً بريدياً من 5 أرقام.", tr: "5 haneli bir posta kodu girin." }),
   row("page-locations", "plz.prefixes", "text", "Postcode check — first two digits that count as covered outside the zones (Settings → Zones)", 23, same("32 33 40 41 42 44 45 46 47 48 50 51 52 53 57 58 59")),
-  row("page-locations", "cities.title", "text", "Cities — title", 24, { de: "Städte, in denen wir arbeiten", en: "Cities we serve", ar: "المدن التي نخدمها", tr: "Hizmet verdiğimiz şehirler" }),
+  row("page-locations", "cities.title", "text", "Cities — title", 24, { de: "Unsere wichtigsten Einsatzorte", en: "Our main service locations", ar: "أهم أماكن عملنا", tr: "Başlıca hizmet bölgelerimiz" }),
   row("page-locations", "cities.note", "textarea", "Cities — note under the list", 25, { de: "Und jeder Ort dazwischen. Umzüge außerhalb von NRW planen wir auf Anfrage.", en: "And every town in between. Moves out of NRW are planned on request.", ar: "وكل البلدات بينها. النقل خارج NRW يُخطّط عند الطلب.", tr: "Ve aradaki her yer. NRW dışına taşınmalar talep üzerine planlanır." }),
   row("page-locations", "cities.1.name", "text", "Cities — 1", 26, same("Düsseldorf")),
   row("page-locations", "cities.2.name", "text", "Cities — 2", 27, same("Köln")),

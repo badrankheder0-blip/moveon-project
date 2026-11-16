@@ -229,7 +229,8 @@
 .mp-city-col h3 { font-family: var(--m-head); font-size: 22px; font-weight: 700; }
 .mp-city-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
 .mp-city-grid span { display: flex; align-items: center; gap: 9px; padding: 12px 14px; border: 1px solid var(--m-line); border-radius: 12px; background: #ffffff; font-size: 14px; font-weight: 600; }
-.mp-city-col > p { font-size: 14px; color: var(--m-muted); }
+/* "And every town in between": the whole of NRW is served, not only the cities listed. */
+.mp-city-col > p { padding: 12px 16px; border-inline-start: 3px solid var(--m-red); border-radius: 4px 12px 12px 4px; background: #fff1f3; font-size: 15px; font-weight: 600; color: var(--m-ink); line-height: 1.55; }
 
 /* ── Jobs: the open roles ───────────────────────────────────────────── */
 .mp-roles-head { display: flex; flex-direction: column; gap: 12px; }
