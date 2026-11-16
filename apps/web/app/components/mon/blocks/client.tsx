@@ -147,7 +147,6 @@ export function StepsBlock({
       {img ? (
         <div className="mp-steps-img" data-rv="1">
           <img src={img} alt="" />
-          <span className="m-corner" />
         </div>
       ) : null}
       <div className="mp-steps-body">

@@ -273,7 +273,6 @@ export function AudienceTabs({ tabs }: { tabs: AudienceTab[] }) {
       <div className="m-aud" role="tabpanel">
         <div className="m-aud-img">
           <img src={current.img} alt="" />
-          <span className="m-corner" />
         </div>
         <div className="m-aud-text">
           <h3>

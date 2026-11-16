@@ -8,7 +8,7 @@ import "./blocks.css";
 /**
  * The top of every inner page (the prototype's `heroB`): breadcrumbs, the
  * red-dashed label, the title, a line, up to two buttons — and on a service
- * page the "Add to request" toggle — beside a photo with the red corner and
+ * page the "Add to request" toggle — beside a photo and
  * the m.on symbol, then an optional strip of three facts. Without a photo the
  * text centres.
  */
@@ -77,7 +77,6 @@ export function PageHero({ crumbs, eyebrow, title, sub, img, video, btn, btn2, c
             <div className="mp-hero-media" data-rv="2">
               <img data-zoom="1" src={img} alt="" />
               {video ? <HeroVideo src={video} /> : null}
-              <span className="m-corner" />
               <img className="mp-hero-sym" src={SYMBOL} alt="" aria-hidden="true" />
             </div>
           ) : null}

@@ -40,7 +40,6 @@
 .mp-hero-media { position: relative; width: 100%; border-radius: 22px; overflow: hidden; height: clamp(220px, 22vw, 320px); background: var(--m-grey); box-shadow: 0 30px 70px #1d22201f; }
 .mp-hero-media > img:first-child, .mp-hero-media > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .mp-hero-media > video { opacity: 0; transition: opacity .9s ease; }
-.mp-hero-media .m-corner { width: clamp(44px, 5vw, 72px); height: clamp(44px, 5vw, 72px); border-start-end-radius: 18px; }
 .mp-hero-sym { position: absolute; top: 18px; inset-inline-end: 18px; width: 54px; height: auto; opacity: .92; filter: brightness(0) invert(1); pointer-events: none; }
 .mp-facts { margin-top: clamp(24px, 3vw, 36px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); border: 1px solid var(--m-line); border-radius: 18px; background: #ffffffd9; overflow: hidden; }
 .mp-facts > div { display: flex; flex-direction: column; gap: 4px; padding: 20px 24px; border-inline-start: 3px solid var(--m-red); margin: -1px 0; }
@@ -92,7 +91,6 @@
 .mp-steps { display: flex; flex-wrap: wrap; gap: clamp(32px, 5vw, 64px); align-items: stretch; }
 .mp-steps-img { flex: 1 1 340px; min-width: 0; position: relative; border-radius: 22px; overflow: hidden; min-height: 320px; max-height: 480px; background: var(--m-grey); }
 .mp-steps-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.mp-steps-img .m-corner { width: 56px; height: 56px; border-start-end-radius: 16px; }
 .mp-steps-body { flex: 1.3 1 460px; min-width: 0; display: flex; flex-direction: column; gap: 28px; }
 .mp-steps-head { display: flex; flex-direction: column; gap: 12px; }
 .mp-steps-head .m-h2 { text-wrap: wrap; }

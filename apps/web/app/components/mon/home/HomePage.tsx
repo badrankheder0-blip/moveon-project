@@ -263,7 +263,6 @@ export function HomePage({
                   <span className="m-why-img" data-tilt="1">
                     <img src={reason.img} alt="" loading="lazy" />
                     <span className="m-shade" />
-                    <span className="m-corner" />
                   </span>
                 ) : null}
                 <span className="m-num" dir="ltr">
