@@ -1,19 +1,22 @@
-import { isTest } from "@mon/config";
+import { env, isTest } from "@mon/config";
 import { db, schema } from "@mon/db";
 import { and, desc, eq, ilike, inArray, ne, or, type SQL } from "drizzle-orm";
-import { Router, type Request } from "express";
+import { Router, type Request, type RequestHandler } from "express";
+import multer from "multer";
 import rateLimit from "express-rate-limit";
 import { RedisStore } from "rate-limit-redis";
 import { z } from "zod";
 
 import { AppError } from "../../lib/errors.js";
 import { logger } from "../../lib/logger.js";
+import { mailer } from "../../lib/mailer.js";
 import { redis } from "../../lib/redis.js";
 import { asyncHandler } from "../../middleware/error-handler.js";
 import { requireAuth } from "../../middleware/require-auth.js";
 import { requirePermission } from "../../middleware/require-permission.js";
 import { validate, validatedParams, validatedQuery } from "../../middleware/validate.js";
 import { recordAudit } from "../audit/audit.service.js";
+import { cleanFileName, detectJobFile, JOB_FILE_MAX_BYTES } from "../jobs/job-files.js";
 
 const { leads, salesQuotes } = schema;
 
@@ -143,6 +146,124 @@ leadsRouter.post(
 
     logger.info({ leadId: created?.id, kind: body.kind }, "Website message received");
 
+    res.status(201).json({ id: created?.id ?? null });
+  }),
+);
+
+/** The office's name for each form, in the German notification. */
+const KIND_LABEL: Record<(typeof LEAD_KINDS)[number], string> = {
+  contact: "Kontaktanfrage",
+  business: "Geschäftskundenanfrage",
+  partner: "Partneranfrage",
+  job: "Bewerbung",
+};
+
+/** The form's fields as multipart text (`payload`, JSON) and at most one file (`file`). */
+const parseLeadWithFile = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: JOB_FILE_MAX_BYTES, files: 1, fields: 2, fieldSize: 40_000 },
+}).single("file");
+
+const receiveLeadWithFile: RequestHandler = (req, res, next) => {
+  parseLeadWithFile(req, res, (error: unknown) => {
+    if (!error) return next();
+    if (error instanceof multer.MulterError && error.code === "LIMIT_FILE_SIZE") {
+      return next(new AppError("PAYLOAD_TOO_LARGE", 413, "FILE_TOO_LARGE"));
+    }
+    next(AppError.badRequest("The form could not be read."));
+  });
+};
+
+/**
+ * A website form with an optional file (the partner form): stored in the
+ * inbox like any other message, and mailed to the office with the file
+ * attached. The file is checked by its bytes — PDF, Word, JPEG or PNG — and is
+ * not kept on the server; the mail is where it lives.
+ */
+leadsRouter.post(
+  "/with-file",
+  leadRateLimit,
+  receiveLeadWithFile,
+  asyncHandler(async (req, res) => {
+    let raw: unknown;
+    try {
+      raw = JSON.parse(String((req.body as { payload?: unknown }).payload ?? ""));
+    } catch {
+      throw AppError.badRequest("The form could not be read.");
+    }
+    const parsed = leadBody.safeParse(raw);
+    if (!parsed.success) {
+      throw AppError.badRequest("Validation failed", {
+        issues: parsed.error.issues.map((issue) => ({ path: issue.path.join("."), message: issue.message })),
+      });
+    }
+    const body = parsed.data;
+
+    if (body.website) {
+      logger.info({ kind: body.kind }, "Website form dropped by the honeypot");
+      res.status(201).json({ id: null });
+      return;
+    }
+
+    let attachment: { filename: string; content: Buffer; contentType: string } | undefined;
+    if (req.file) {
+      const format = req.file.size > 0 ? detectJobFile(req.file.buffer, "attachment") : null;
+      if (!format) throw new AppError("UNSUPPORTED_MEDIA_TYPE", 415, "FILE_TYPE");
+      attachment = { filename: cleanFileName(req.file.originalname, format), content: req.file.buffer, contentType: format.contentType };
+    }
+
+    const data = Object.fromEntries(Object.entries(body.data).filter(([, value]) => value !== ""));
+    if (attachment) data.attachment = `${attachment.filename} (per E-Mail an das Büro gesendet)`;
+
+    const [created] = await db
+      .insert(leads)
+      .values({
+        kind: body.kind,
+        name: body.name ?? body.company ?? body.email ?? body.phone ?? "—",
+        email: body.email ?? null,
+        phone: body.phone ?? null,
+        company: body.company ?? null,
+        message: body.message ?? null,
+        data,
+        locale: body.locale,
+      })
+      .returning({ id: leads.id });
+
+    const [office] = await db
+      .select({ value: schema.siteSettings.value })
+      .from(schema.siteSettings)
+      .where(eq(schema.siteSettings.key, "contact.email"))
+      .limit(1);
+    const officeEmail = office?.value.trim();
+
+    // Stored either way; a missing or failed mail is logged, never a refusal.
+    if (officeEmail) {
+      const mailed = await mailer.trySend({
+        template: "website-lead",
+        to: officeEmail,
+        payload: {
+          kindLabel: KIND_LABEL[body.kind],
+          name: body.name ?? body.company ?? "—",
+          company: body.company,
+          email: body.email,
+          phone: body.phone,
+          message: body.message,
+          lines: Object.entries(body.data)
+            .filter(([, value]) => value !== "")
+            .map(([key, value]) => `${key}: ${value}`),
+          attachment: attachment?.filename,
+          locale: body.locale,
+          inboxUrl: `${env.WEB_ORIGIN}/de/admin/posteingang`,
+        },
+        locale: "de",
+        attachments: attachment ? [attachment] : undefined,
+      });
+      if (!mailed) logger.warn({ leadId: created?.id }, "Website message stored, but the office could not be mailed");
+    } else {
+      logger.warn({ leadId: created?.id }, "Website message stored without a notification: no contact.email in site settings");
+    }
+
+    logger.info({ leadId: created?.id, kind: body.kind, file: Boolean(attachment) }, "Website message with file received");
     res.status(201).json({ id: created?.id ?? null });
   }),
 );

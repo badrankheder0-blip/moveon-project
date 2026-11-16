@@ -370,3 +370,9 @@
 .is-on .mp-acc-more { max-height: 220px; opacity: 1; }
 .mp-acc-more small { font-size: 15px; line-height: 1.55; color: #ffffffe0; max-width: 420px; }
 .mp-acc-more span { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: #ffffff; }
+
+/* Plain picture tiles (Partnerschaften): photo and name, no card. */
+.mp-tiles { margin-top: clamp(24px, 3vw, 36px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: clamp(16px, 2vw, 24px); }
+.mp-tile { margin: 0; display: flex; flex-direction: column; gap: 12px; }
+.mp-tile img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 16px; display: block; }
+.mp-tile figcaption { font-family: var(--m-head); font-size: 19px; font-weight: 700; }

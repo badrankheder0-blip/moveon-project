@@ -72,6 +72,9 @@ export function createSmtpTransport(options: SmtpOptions): MailTransport {
         subject: message.subject,
         text: message.text,
         html: message.html,
+        ...(message.attachments?.length
+          ? { attachments: message.attachments.map((file) => ({ filename: file.filename, content: file.content, contentType: file.contentType })) }
+          : {}),
       });
 
       options.onAttempt?.({ attempt, outcome: "sent" });

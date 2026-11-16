@@ -54,6 +54,15 @@ export function createResendTransport(options: ResendOptions): MailTransport {
           ...(message.replyTo ?? options.replyTo
             ? { reply_to: message.replyTo ?? options.replyTo }
             : {}),
+          ...(message.attachments?.length
+            ? {
+                attachments: message.attachments.map((file) => ({
+                  filename: file.filename,
+                  content: file.content.toString("base64"),
+                  ...(file.contentType ? { content_type: file.contentType } : {}),
+                })),
+              }
+            : {}),
         }),
         // Without this a hung connection holds the request handling it open
         // indefinitely, and a stalled password-reset endpoint is worse than a

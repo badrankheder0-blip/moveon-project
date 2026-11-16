@@ -12,6 +12,7 @@ export type {
   PaymentReceiptPayload,
   ServiceRequestPayload,
   VerifyEmailPayload,
+  WebsiteLeadPayload,
 } from "./templates/registry.js";
 export { createSmtpTransport, type SmtpOptions } from "./transports/smtp.js";
 export { createResendTransport, type ResendOptions } from "./transports/resend.js";

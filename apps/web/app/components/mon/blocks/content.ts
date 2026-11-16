@@ -221,6 +221,8 @@ export function fieldOf(
     ...(options.required ? { required: true } : {}),
     ...(options.wide || type === "area" ? { wide: true } : {}),
     ...(type === "select" ? { options: options.choices ?? page.lines(`form.${name}Options`) } : {}),
+    // An optional hint inside the empty field: `form.<name>Placeholder`.
+    ...(page.c(`form.${name}Placeholder`) ? { placeholder: page.c(`form.${name}Placeholder`) } : {}),
   };
 }
 

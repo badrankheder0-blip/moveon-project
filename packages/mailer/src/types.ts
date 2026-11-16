@@ -25,6 +25,14 @@ export interface MailMessage {
   replyTo?: string | undefined;
   /** Carried into logs and the outbox filename, never into the message. */
   tags?: Record<string, string> | undefined;
+  /** Files sent with the message, e.g. what a visitor uploaded with a form. */
+  attachments?: readonly MailAttachment[] | undefined;
+}
+
+export interface MailAttachment {
+  filename: string;
+  content: Buffer;
+  contentType?: string | undefined;
 }
 
 export interface SentMail {

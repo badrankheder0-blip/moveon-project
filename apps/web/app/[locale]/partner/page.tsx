@@ -5,13 +5,15 @@ import { StepsBlock } from "@/app/components/mon/blocks/client";
 import { fieldOf, formCopyOf, loadPage, pageMetadata } from "@/app/components/mon/blocks/content";
 import { FormBlock } from "@/app/components/mon/blocks/FormBlock";
 import { PageHero } from "@/app/components/mon/blocks/PageHero";
-import { Cards } from "@/app/components/mon/blocks/Sections";
-import { cardItems, heroOf } from "@/app/components/mon/blocks/ServicePage";
+import { ImageTiles } from "@/app/components/mon/blocks/Sections";
+import { heroOf } from "@/app/components/mon/blocks/ServicePage";
 
 /**
- * Partnerships (the prototype's `#/partners`): the hero, who m.on works
- * with, how a partnership runs and the partner request, which reaches the
- * website inbox as a partner lead (`POST /api/leads`). CMS section
+ * Partnerships (the prototype's `#/partners`): the hero, the four services a
+ * partner can book (the booking planner's pictures, name only), how a
+ * partnership starts, and the partner request with an optional file, which
+ * reaches the website inbox as a partner lead and is mailed to the office
+ * with the file attached (`POST /api/leads/with-file`). CMS section
  * `page-partner`.
  */
 
@@ -23,12 +25,16 @@ export async function generateMetadata({ params }: { params: { locale: Locale } 
 
 export default async function PartnerPage({ params }: { params: { locale: Locale } }) {
   const page = await loadPage(params.locale, SECTION);
-  const { c, items } = page;
+  const { c, items, img } = page;
 
   return (
     <>
       <PageHero {...heroOf(page)} />
-      <Cards eyebrow={c("cards.eyebrow")} title={c("cards.title")} items={cardItems(page, "cards")} />
+      <ImageTiles
+        eyebrow={c("cards.eyebrow")}
+        title={c("cards.title")}
+        items={items("cards", ["title"]).map((card, i) => ({ title: card.title, img: img(`cards.${i + 1}.img`) ?? "" }))}
+      />
       <section style={{ position: "relative" }}>
         <StepsBlock eyebrow={c("steps.eyebrow")} title={c("steps.title")} sets={[{ items: items("steps", ["title", "text"]) }]} />
       </section>
@@ -42,9 +48,16 @@ export default async function PartnerPage({ params }: { params: { locale: Locale
           fieldOf(page, "name", "text", { required: true }),
           fieldOf(page, "email", "email", { required: true }),
           fieldOf(page, "phone", "tel"),
-          fieldOf(page, "type", "select"),
           fieldOf(page, "message", "area"),
         ]}
+        upload={{
+          label: c("form.file"),
+          hint: c("form.fileHint"),
+          choose: c("form.fileChoose"),
+          remove: c("form.fileRemove"),
+          errType: c("form.fileErrType"),
+          errSize: c("form.fileErrSize"),
+        }}
       />
     </>
   );

@@ -49,6 +49,7 @@ export function createLogTransport(options: LogOptions): MailTransport {
           `To:      ${message.to}`,
           `Subject: ${message.subject}`,
           `From:    ${message.from ?? "(default MAIL_FROM)"}`,
+          ...(message.attachments?.length ? [`Attach:  ${message.attachments.map((file) => `${file.filename} (${file.content.length} B)`).join(", ")}`] : []),
           "",
           "--- text/plain alternative ---",
           message.text,

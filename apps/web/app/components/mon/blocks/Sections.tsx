@@ -655,3 +655,32 @@ export function ClosingCta({ cta, question = false }: { cta: CtaCopy; question?:
 export function Blocks({ children }: { children: ReactNode }) {
   return <Fragment>{children}</Fragment>;
 }
+
+// ── Image tiles: a picture and a name, nothing else ──────────────────────
+
+/**
+ * A row of plain picture tiles, each a photo with its name under it — no
+ * card border, no text, no button (the Partnerschaften page's services, with
+ * the booking planner's service pictures).
+ */
+export function ImageTiles({ eyebrow, title, items }: { eyebrow: string; title: string; items: { title: string; img: string }[] }) {
+  if (!items.length) return null;
+  return (
+    <section style={{ position: "relative" }}>
+      <div className="mp-sec">
+        <div className="mp-cards-head" data-rv="1">
+          <span className="m-eyebrow">{eyebrow}</span>
+          <h2 className="m-h2">{title}</h2>
+        </div>
+        <div className="mp-tiles">
+          {items.map((item, i) => (
+            <figure key={`${item.title}-${i}`} className="mp-tile" data-rv={(i % 4) + 1}>
+              {item.img ? <img src={item.img} alt="" loading="lazy" /> : null}
+              <figcaption>{item.title}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

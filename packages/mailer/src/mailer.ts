@@ -4,7 +4,7 @@ import { renderTemplate, type PayloadFor, type TemplateKey } from "./templates/r
 import { createLogTransport } from "./transports/log.js";
 import { createResendTransport } from "./transports/resend.js";
 import { createSmtpTransport } from "./transports/smtp.js";
-import type { MailDriver, MailTransport, SentMail } from "./types.js";
+import type { MailAttachment, MailDriver, MailTransport, SentMail } from "./types.js";
 
 export interface MailerEvents {
   /** Called for every send, whatever the outcome. Wired to pino in the API. */
@@ -34,6 +34,7 @@ export interface Mailer {
     payload: PayloadFor<K>;
     /** Read straight from `users.locale`; narrowed by the registry. */
     locale?: unknown;
+    attachments?: readonly MailAttachment[] | undefined;
   }): Promise<SentMail>;
 
   /**
@@ -50,6 +51,7 @@ export interface Mailer {
     to: string;
     payload: PayloadFor<K>;
     locale?: unknown;
+    attachments?: readonly MailAttachment[] | undefined;
   }): Promise<SentMail | null>;
 
   verify(): Promise<void>;
@@ -75,6 +77,7 @@ export function createMailer(
     to: string;
     payload: PayloadFor<K>;
     locale?: unknown;
+    attachments?: readonly MailAttachment[] | undefined;
   }): Promise<SentMail> {
     const rendered = renderTemplate(input.template, input.payload, input.locale);
     const startedAt = Date.now();
@@ -86,6 +89,7 @@ export function createMailer(
       text: rendered.text,
       replyTo: env.MAIL_REPLY_TO,
       tags: { template: input.template },
+      attachments: input.attachments,
     });
 
     events.onSend?.({

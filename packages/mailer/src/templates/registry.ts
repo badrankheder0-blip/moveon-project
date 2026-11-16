@@ -9,6 +9,7 @@ import { passwordResetTemplate, type PasswordResetPayload } from "./password-res
 import { salesQuoteTemplate, type SalesQuotePayload } from "./sales-quote.js";
 import { serviceRequestTemplate, type ServiceRequestPayload } from "./service-request.js";
 import { verifyEmailTemplate, type VerifyEmailPayload } from "./verify-email.js";
+import { websiteLeadTemplate, type WebsiteLeadPayload } from "./website-lead.js";
 
 /**
  * The one place that knows which emails exist.
@@ -28,6 +29,7 @@ const TEMPLATES = {
   "service-request": serviceRequestTemplate,
   "sales-quote": salesQuoteTemplate,
   "job-application": jobApplicationTemplate,
+  "website-lead": websiteLeadTemplate,
 } as const;
 
 export type TemplateKey = keyof typeof TEMPLATES;
@@ -45,6 +47,7 @@ export type {
   SalesQuotePayload,
   ServiceRequestPayload,
   VerifyEmailPayload,
+  WebsiteLeadPayload,
 };
 
 /**
