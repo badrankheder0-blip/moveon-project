@@ -63,6 +63,10 @@
 .mp-cards-head.is-center { margin-inline: auto; text-align: center; }
 .mp-cards-head p { color: var(--m-muted); font-size: 15.5px; text-wrap: pretty; }
 .mp-cards { margin-top: clamp(24px, 3vw, 36px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--min, 260px)), 1fr)); gap: 16px; }
+.mp-cards.is-balanced { display: flex; flex-wrap: wrap; justify-content: center; }
+.mp-cards.is-balanced > * { flex: 0 1 calc((100% - 4 * 16px) / 5); min-width: 0; }
+@media (max-width: 1099px) { .mp-cards.is-balanced > * { flex-basis: calc((100% - 2 * 16px) / 3); } }
+@media (max-width: 639px) { .mp-cards.is-balanced > * { flex-basis: 100%; } }
 .mp-cards.is-num { gap: clamp(40px, 5vw, 72px) clamp(32px, 4vw, 64px); }
 .mon-site .mp-card { display: flex; flex-direction: column; gap: 12px; padding: 26px; border: 1px solid var(--m-line); border-radius: 18px; background: #ffffff; color: var(--m-ink); cursor: default; transition: transform .25s, box-shadow .25s, border-color .25s; }
 .mon-site a.mp-card { cursor: pointer; }

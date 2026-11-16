@@ -85,6 +85,7 @@ export function Cards({
   numbered = false,
   imaged = false,
   minW,
+  balanced = false,
   items,
   link,
 }: {
@@ -97,6 +98,12 @@ export function Cards({
   /** Photo cards: a 16:10 picture with the icon in its red corner (v14 "What's included"). */
   imaged?: boolean;
   minW?: string;
+  /**
+   * Rows of equal length for a count the grid would split unevenly: five
+   * cards sit in one row on a wide screen, three and two (centred) on a
+   * tablet, one per row on a phone — never four over one.
+   */
+  balanced?: boolean;
   items: CardItem[];
   link?: LinkSpec | undefined;
 }) {
@@ -110,7 +117,7 @@ export function Cards({
           <h2 className="m-h2">{title}</h2>
           {sub ? <p>{sub}</p> : null}
         </div>
-        <div className={`mp-cards${numbered ? " is-num" : ""}`} style={{ ["--min" as string]: minW ?? (numbered ? "300px" : "260px") }}>
+        <div className={`mp-cards${numbered ? " is-num" : ""}${balanced ? " is-balanced" : ""}`} style={{ ["--min" as string]: minW ?? (numbered ? "300px" : "260px") }}>
           {items.map((item, i) =>
             numbered ? (
               <div key={i} className="m-why-item" data-rv={(i % 4) + 1}>

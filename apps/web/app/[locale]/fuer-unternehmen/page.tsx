@@ -9,8 +9,8 @@ import { Cards } from "@/app/components/mon/blocks/Sections";
 import { cardItems, heroOf } from "@/app/components/mon/blocks/ServicePage";
 
 /**
- * Business accounts (the prototype's `#/business`): the hero, six reasons
- * companies choose m.on, how a business move runs and the request form,
+ * Business accounts (the prototype's `#/business`): the hero, five reasons
+ * companies choose m.on (in one balanced row), how a business move runs and the request form,
  * which reaches the website inbox as a business lead (`POST /api/leads`).
  * The prototype ends on the form, without the closing pair. CMS section
  * `page-for-business`.
@@ -29,7 +29,7 @@ export default async function ForBusinessPage({ params }: { params: { locale: Lo
   return (
     <>
       <PageHero {...heroOf(page)} />
-      <Cards eyebrow={c("cards.eyebrow")} title={c("cards.title")} items={cardItems(page, "cards")} />
+      <Cards eyebrow={c("cards.eyebrow")} title={c("cards.title")} items={cardItems(page, "cards")} balanced />
       <section style={{ position: "relative" }}>
         <StepsBlock eyebrow={c("steps.eyebrow")} title={c("steps.title")} sets={[{ items: items("steps", ["title", "text"]) }]} />
       </section>
