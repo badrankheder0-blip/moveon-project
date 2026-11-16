@@ -132,6 +132,21 @@ loadRootEnv();
  */
 const nextConfig = {
   distDir: process.env.NEXT_DIST_DIR || ".next",
+
+  /**
+   * Pages taken off the site, sent on permanently (301) so old links and
+   * search results still land somewhere useful.
+   *
+   * The moving plan (/so-funktioniert, "Umzugsplan") was removed; its visitors
+   * go to the services page. Both with and without a language prefix — the
+   * middleware adds the prefix to a bare path, and this answers either form.
+   */
+  async redirects() {
+    return [
+      { source: "/:locale(de|en|ar|tr)/so-funktioniert", destination: "/:locale/leistungen", statusCode: 301 },
+      { source: "/so-funktioniert", destination: "/de/leistungen", statusCode: 301 },
+    ];
+  },
 };
 
 module.exports = nextConfig;

@@ -52,7 +52,6 @@ export default function AccountOverviewPage() {
 
   const quick: [string, string, string, string][] = [
     [tx("qNew"), tx("qNewD"), `/${locale}/rechner`, IC.box],
-    [tx("qPlan"), tx("qPlanD"), `/${locale}/so-funktioniert`, IC.calendar],
     [tx("invoices"), tx("noInvoices"), `/${locale}/konto/rechnungen`, IC.doc],
     [tx("qHelp"), tx("qHelpD"), `/${locale}/faq`, IC.chat],
   ];

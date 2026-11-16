@@ -35,7 +35,6 @@ const SHELL = "mx-auto w-full max-w-[1440px] px-5 md:px-10 2xl:px-[120px]";
  * row under the main one, so the frame's main row stays exactly as drawn.
  */
 const MORE = [
-  { path: "/so-funktioniert", key: "nav.howItWorks" },
   { path: "/kontakt", key: "nav.contact" },
   { path: "/ratgeber", key: "nav.guide" },
 ] as const;

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import type { Locale } from "@/lib/i18n/config";
-import { ServicePanels, StepsBlock } from "@/app/components/mon/blocks/client";
+import { ServicePanels } from "@/app/components/mon/blocks/client";
 import { ctaOf, loadPage, mythsOf, pageMetadata } from "@/app/components/mon/blocks/content";
 import { PageHero } from "@/app/components/mon/blocks/PageHero";
 import { Cards, ClosingCta, Myths } from "@/app/components/mon/blocks/Sections";
@@ -11,7 +11,8 @@ import { siteHref } from "@/app/components/mon/links";
 /**
  * All services (the prototype's `#/services`): the hero, the four services
  * as photo panels that open on hover, private or business, the expectation
- * cards, how booking works and the closing pair. CMS section `page-services`.
+ * cards and the closing pair. CMS section `page-services`. (The "Vier Schritte
+ * vom Plan bis zum Schlüssel." steps were taken off the page.)
  */
 
 const SECTION = "page-services";
@@ -22,7 +23,7 @@ export async function generateMetadata({ params }: { params: { locale: Locale } 
 
 export default async function ServicesPage({ params }: { params: { locale: Locale } }) {
   const page = await loadPage(params.locale, SECTION);
-  const { c, items, img, link } = page;
+  const { c, items, img } = page;
 
   return (
     <>
@@ -39,9 +40,6 @@ export default async function ServicesPage({ params }: { params: { locale: Local
       </section>
       <Cards eyebrow={c("forwho.eyebrow")} title={c("forwho.title")} items={cardItems(page, "forwho")} minW="320px" />
       <Myths {...mythsOf(page)} />
-      <section style={{ position: "relative" }}>
-        <StepsBlock eyebrow={c("steps.eyebrow")} title={c("steps.title")} img={img("steps.img")} sets={[{ items: items("steps", ["title", "text"]), btn: link("steps.btn") }]} />
-      </section>
       <ClosingCta cta={ctaOf(page)} question />
     </>
   );
