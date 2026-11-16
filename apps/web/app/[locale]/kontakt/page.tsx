@@ -1,21 +1,18 @@
 import type { Metadata } from "next";
 
 import type { Locale } from "@/lib/i18n/config";
-import { fetchSiteTheme } from "@/lib/site/theme";
 import { fieldOf, formCopyOf, loadPage, pageMetadata } from "@/app/components/mon/blocks/content";
 import { FormBlock } from "@/app/components/mon/blocks/FormBlock";
 import { PageHero } from "@/app/components/mon/blocks/PageHero";
-import { Cards } from "@/app/components/mon/blocks/Sections";
-import { cardItems, heroOf } from "@/app/components/mon/blocks/ServicePage";
+import { LinkBanner } from "@/app/components/mon/blocks/Sections";
+import { heroOf } from "@/app/components/mon/blocks/ServicePage";
 
 /**
- * Contact (the prototype's `#/contact`): the hero, three quick ways to help
- * and the message form, which reaches the website inbox as a contact lead
- * (`POST /api/leads`). CMS section `page-contact`.
- *
- * A quick-help card whose address is a bare `tel:` calls the number in
- * Settings → Contact and shows it; while no number is set it shows its own
- * text and links nowhere.
+ * Contact ("Fragen", the prototype's `#/contact`): the headline and intro,
+ * the message form straight under them, and one full-width banner pointing
+ * to the FAQ. There is no phone contact and no "manage booking" card — the
+ * bookings are in the account, reached from the top bar once signed in.
+ * CMS section `page-contact`.
  */
 
 const SECTION = "page-contact";
@@ -25,19 +22,12 @@ export async function generateMetadata({ params }: { params: { locale: Locale } 
 }
 
 export default async function ContactPage({ params }: { params: { locale: Locale } }) {
-  const [page, site] = await Promise.all([loadPage(params.locale, SECTION), fetchSiteTheme()]);
-  const { c } = page;
-  const phone = site.contact["contact.phone"]?.trim() ?? "";
-
-  const quick = cardItems(page, "quick").map((item) => {
-    if (item.href !== "tel:") return item;
-    return phone ? { ...item, text: `⁦${phone}⁩`, href: `tel:${phone.replace(/[^\d+]/g, "")}` } : { ...item, href: "" };
-  });
+  const page = await loadPage(params.locale, SECTION);
+  const { c, link } = page;
 
   return (
     <>
       <PageHero {...heroOf(page)} />
-      <Cards eyebrow={c("quick.eyebrow")} title={c("quick.title")} items={quick} />
       <FormBlock
         anchor="form"
         kind="contact"
@@ -51,6 +41,7 @@ export default async function ContactPage({ params }: { params: { locale: Locale
           fieldOf(page, "message", "area", { required: true }),
         ]}
       />
+      <LinkBanner text={c("faqBanner.text")} link={link("faqBanner.btn")} />
     </>
   );
 }

@@ -7,7 +7,6 @@ import { useEffect, useRef, useState } from "react";
 import { useApi } from "@/lib/api";
 import type { Locale } from "@/lib/i18n/config";
 import { useI18n } from "@/lib/i18n/provider";
-import { telHref } from "@/lib/site/useSiteSettings";
 
 import { FLAGS } from "./flags";
 import { Arrow } from "./Icons";
@@ -15,15 +14,15 @@ import { initialsOf, isExternal, readItems, siteHref, type Copy } from "./links"
 
 /**
  * The public header, as the website prototype draws it: a grey top bar of
- * secondary links with the phone number, then a sticky white bar with the
+ * secondary links, then a sticky white bar with the
  * lockup and one grey pill holding the main links, the account, the request
  * basket, a red "Book now" and the language menu. Hovering "Services" opens a
  * menu of the services; a 2px red line along the bottom fills as the page
  * scrolls.
  *
  * Every word and link is a row of the CMS section `chrome`, so the office
- * edits the header from the dashboard. The phone number is the
- * `contact.phone` setting, so it changes in one place for the whole site.
+ * edits the header from the dashboard. There is no phone number: m.on does
+ * not offer phone contact.
  */
 
 const LANGS: { code: Locale; short: string; name: string }[] = [
@@ -36,10 +35,7 @@ const LANGS: { code: Locale; short: string; name: string }[] = [
 /** The request basket, shared with the service pages' "Add to request" buttons. */
 export const CART_KEY = "mon.site-cart";
 
-const PHONE_ICON =
-  "M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z";
-
-export function SiteHeader({ copy, logo, phone }: { copy: Copy; logo: string; phone?: string | undefined }) {
+export function SiteHeader({ copy, logo }: { copy: Copy; logo: string; phone?: string | undefined }) {
   const { user, isStaff } = useApi();
   const { locale, setLocale } = useI18n();
   const pathname = usePathname();
@@ -69,7 +65,6 @@ export function SiteHeader({ copy, logo, phone }: { copy: Copy; logo: string; ph
   const services = readItems(copy, "mega", ["id", "name", "short", "img", "href"]);
   const servicesPath = copy["nav.servicesHref"]?.trim() || "/#services";
   const bookHref = href(copy["nav.bookHref"] || "/rechner");
-  const number = phone?.trim() || "";
 
   // A link is "here" when it names this page; the homepage only for itself.
   const isHere = (target: string) => {
@@ -169,12 +164,6 @@ export function SiteHeader({ copy, logo, phone }: { copy: Copy; logo: string; ph
               ))}
             </nav>
           ) : null}
-          <a className="m-phone" href={number ? telHref(number) : href("/kontakt")}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d={PHONE_ICON} />
-            </svg>
-            {number ? <bdi>{number}</bdi> : copy["topbar.phone"]}
-          </a>
         </div>
       </div>
 

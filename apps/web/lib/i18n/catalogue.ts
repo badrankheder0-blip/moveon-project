@@ -1106,7 +1106,7 @@ export const MESSAGES = {
     de: "Zugewiesenes Team", en: "Assigned team", ar: "الفريق المكلّف", tr: "Atanan ekip",
   },
   "dash.contactTeam": {
-    de: "Team anrufen", en: "Contact Team", ar: "اتّصل بالفريق", tr: "Ekibe Ulaş",
+    de: "Team kontaktieren", en: "Contact Team", ar: "تواصل مع الفريق", tr: "Ekibe Ulaş",
   },
   "dash.viewDetails": {
     de: "Details ansehen", en: "View Details", ar: "عرض التفاصيل", tr: "Detayları Gör",
@@ -1832,10 +1832,10 @@ export const MESSAGES = {
 
   // The line under each heading that says what the step is for.
   "calc.lead.service": {
-    de: "Wählen Sie die Leistung, die Sie brauchen. Mehrere auf einmal? Rufen Sie uns an, wir kombinieren sie.",
-    en: "Choose the service you need. Need several at once? Call us and we will combine them.",
-    ar: "اختر الخدمة التي تحتاجها. تحتاج أكثر من واحدة؟ اتصل بنا وسنجمعها لك.",
-    tr: "İhtiyacınız olan hizmeti seçin. Birden fazlası mı gerekiyor? Bizi arayın, birleştirelim.",
+    de: "Wählen Sie die Leistung, die Sie brauchen. Mehrere auf einmal? Schreiben Sie uns, wir kombinieren sie.",
+    en: "Choose the service you need. Need several at once? Write to us and we will combine them.",
+    ar: "اختر الخدمة التي تحتاجها. تحتاج أكثر من واحدة؟ راسلنا وسنجمعها لك.",
+    tr: "İhtiyacınız olan hizmeti seçin. Birden fazlası mı gerekiyor? Bize yazın, birleştirelim.",
   },
   "calc.lead.route": {
     de: "Bitte geben Sie an, ob es ein privater oder gewerblicher Umzug ist, und nennen Sie die Adressen.",
@@ -2145,8 +2145,8 @@ export const MESSAGES = {
     ar: "تحتاج مساعدة في الحجز؟", tr: "Rezervasyonda yardım mı lazım?",
   },
   "calc.confirm.callUs": {
-    de: "Hotline anrufen", en: "Call our hotline",
-    ar: "اتصل بخط المساعدة", tr: "Destek hattını arayın",
+    de: "Kontakt", en: "Contact",
+    ar: "تواصل معنا", tr: "İletişim",
   },
 
   "calc.confirm.registerTitle": {
@@ -2456,10 +2456,10 @@ export const MESSAGES = {
   },
 
   "calc.addonsNote": {
-    de: "Möbelmontage fragen wir später pro Möbelstück ab. Reinigung und Entrümpelung sind eigene Leistungen — wählen Sie sie im ersten Schritt oder rufen Sie uns an.",
-    en: "Furniture assembly is asked per item later on. Cleaning and clearance are services of their own — pick them in the first step or call us.",
-    ar: "نسأل عن تركيب الأثاث لاحقاً لكل قطعة. التنظيف والإخلاء خدمتان مستقلتان — اخترهما في الخطوة الأولى أو اتصل بنا.",
-    tr: "Mobilya montajını ilerleyen adımda parça parça soruyoruz. Temizlik ve boşaltma ayrı hizmetlerdir — ilk adımda seçin ya da bizi arayın.",
+    de: "Möbelmontage fragen wir später pro Möbelstück ab. Reinigung und Entrümpelung sind eigene Leistungen — wählen Sie sie im ersten Schritt.",
+    en: "Furniture assembly is asked per item later on. Cleaning and clearance are services of their own — pick them in the first step.",
+    ar: "نسأل عن تركيب الأثاث لاحقاً لكل قطعة. التنظيف والإخلاء خدمتان مستقلتان — اخترهما في الخطوة الأولى.",
+    tr: "Mobilya montajını ilerleyen adımda parça parça soruyoruz. Temizlik ve boşaltma ayrı hizmetlerdir — ilk adımda seçin.",
   },
   "calc.crewRecommendation": {
     de: "Für eine Zweizimmerwohnung empfehlen wir drei Mitarbeiter.",
@@ -2477,10 +2477,10 @@ export const MESSAGES = {
     tr: "Montaj ve ağır eşya uyarısı",
   },
   "calc.specialNoticeBody": {
-    de: "Stücke über 100 kg brauchen Gurte und geschultes Personal. Sagen Sie uns vorab Bescheid — telefonisch oder mit einem Foto im nächsten Schritt.",
-    en: "Items over 100 kg need belts and trained helpers. Tell us in advance — by phone, or with a photo in the next step.",
-    ar: "الأغراض التي تتجاوز 100 كغ تحتاج أحزمة وعمّالاً مدرّبين. أخبرنا مسبقاً هاتفياً أو بصورة في الخطوة التالية.",
-    tr: "100 kg üzeri eşyalar kemer ve eğitimli eleman gerektirir. Bize önceden telefonla ya da sonraki adımda bir fotoğrafla bildirin.",
+    de: "Stücke über 100 kg brauchen Gurte und geschultes Personal. Sagen Sie uns vorab Bescheid — mit einem Foto im nächsten Schritt oder über das Kontaktformular.",
+    en: "Items over 100 kg need belts and trained helpers. Tell us in advance — with a photo in the next step or through the contact form.",
+    ar: "الأغراض التي تتجاوز 100 كغ تحتاج أحزمة وعمّالاً مدرّبين. أخبرنا مسبقاً بصورة في الخطوة التالية أو عبر نموذج التواصل.",
+    tr: "100 kg üzeri eşyalar kemer ve eğitimli eleman gerektirir. Bize önceden sonraki adımda bir fotoğrafla ya da iletişim formuyla bildirin.",
   },
 
   "calc.photosDropTitle": {
@@ -6522,10 +6522,10 @@ export const MESSAGES = {
     tr: "Şirketle nasıl iletişime geçerim?",
   },
   "plan.help.contact.a": {
-    de: "Ruf uns an unter {phone} oder schreib uns über den Chat auf unserer Website.",
-    en: "Call us on {phone} or write to us through the chat on our website.",
-    ar: "اتصل بنا على {phone} أو راسلنا عبر المحادثة في موقعنا.",
-    tr: "Bizi {phone} numarasından arayın veya web sitemizdeki sohbet üzerinden yazın.",
+    de: "Schreib uns über das Kontaktformular auf unserer Website (Fragen) – wir antworten meist innerhalb eines Werktags.",
+    en: "Write to us through the contact form on our website (Questions) – we usually reply within one working day.",
+    ar: "راسلنا عبر نموذج التواصل في موقعنا (الأسئلة) – نرد عادةً خلال يوم عمل واحد.",
+    tr: "Web sitemizdeki iletişim formu (Sorular) üzerinden bize yazın – genellikle bir iş günü içinde yanıtlarız.",
   },
   "plan.error.services": {
     de: "Wähle mindestens eine Leistung, um fortzufahren.",

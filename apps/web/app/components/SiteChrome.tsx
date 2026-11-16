@@ -92,7 +92,7 @@ export function SiteChrome({
   return (
     <div className="mon-site" id="top">
       <NetBackground symbol={settings.background || NET_SYMBOL} />
-      <SiteHeader copy={chrome} logo={settings.logo} phone={settings.phone} />
+      <SiteHeader copy={chrome} logo={settings.logo} />
       <div className="m-main">{children}</div>
       {footer}
       <CookieBanner copy={chrome} locale={locale} />

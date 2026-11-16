@@ -37,10 +37,10 @@ const WORDS = {
     tr: "Teşekkürler! Mesajınız bize ulaştı. En kısa sürede size dönüş yapacağız.",
   },
   error: {
-    de: "Das hat leider nicht geklappt. Bitte versuchen Sie es erneut oder rufen Sie uns an.",
-    en: "Sorry, that didn't work. Please try again or give us a call.",
-    ar: "عذراً، لم يتم الإرسال. حاول مرة أخرى أو اتصل بنا.",
-    tr: "Üzgünüz, gönderilemedi. Lütfen tekrar deneyin veya bizi arayın.",
+    de: "Das hat leider nicht geklappt. Bitte versuchen Sie es erneut.",
+    en: "Sorry, that didn't work. Please try again.",
+    ar: "عذراً، لم يتم الإرسال. حاول مرة أخرى.",
+    tr: "Üzgünüz, gönderilemedi. Lütfen tekrar deneyin.",
   },
 };
 

@@ -36,7 +36,9 @@ export function useSiteSettings() {
     /** The mark without the wordmark, for the small slots; see `brand.mark`. */
     mark: markSrc(settings.brand["brand.mark"]),
     tagline: settings.brand["brand.tagline"] ?? "",
-    phone: settings.contact["contact.phone"] ?? "",
+    // m.on offers no phone contact: no number is shown anywhere on the
+    // public site, whatever Settings → Company holds (invoices still use it).
+    phone: "",
     email: settings.contact["contact.email"] ?? "",
     address: settings.contact["contact.address"] ?? "",
     hours: settings.contact["contact.hours"] ?? "",

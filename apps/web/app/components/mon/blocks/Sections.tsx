@@ -684,3 +684,25 @@ export function ImageTiles({ eyebrow, title, items }: { eyebrow: string; title: 
     </section>
   );
 }
+
+// ── A one-line banner with a button ──────────────────────────────────────
+
+/** One full-width row: a short line beside a button (the Fragen page's FAQ banner). */
+export function LinkBanner({ text, link }: { text: string; link: LinkSpec | undefined }) {
+  if (!text && !link?.label) return null;
+  return (
+    <section style={{ position: "relative" }}>
+      <div className="mp-sec">
+        <div className="mp-banner" data-rv="1">
+          <p>{text}</p>
+          {link?.label ? (
+            <SmartLink href={link.href} className="mp-btn">
+              {link.label}
+              <Arrow size={15} />
+            </SmartLink>
+          ) : null}
+        </div>
+      </div>
+    </section>
+  );
+}

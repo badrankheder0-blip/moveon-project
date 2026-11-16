@@ -105,7 +105,7 @@ const TEXT = {
     errAttachmentType: "Anlagen müssen PDF-, DOC-, DOCX-, JPG- oder PNG-Dateien sein.",
     errSize: "Jede Datei darf höchstens 10 MB groß sein.",
     errTooMany: "Sie können höchstens 5 weitere Anlagen hochladen.",
-    errSend: "Das hat leider nicht geklappt. Bitte versuchen Sie es erneut oder rufen Sie uns an.",
+    errSend: "Das hat leider nicht geklappt. Bitte versuchen Sie es erneut.",
     errLimit: "Zu viele Versuche. Bitte warten Sie etwas und versuchen Sie es dann erneut.",
   },
   en: {
@@ -158,7 +158,7 @@ const TEXT = {
     errAttachmentType: "Attachments must be PDF, DOC, DOCX, JPG or PNG files.",
     errSize: "Each file can be at most 10 MB.",
     errTooMany: "You can upload at most 5 additional attachments.",
-    errSend: "Sorry, that didn't work. Please try again or give us a call.",
+    errSend: "Sorry, that didn't work. Please try again.",
     errLimit: "Too many attempts. Please wait a while and try again.",
   },
   ar: {
@@ -211,7 +211,7 @@ const TEXT = {
     errAttachmentType: "يجب أن تكون المرفقات ملفات PDF أو DOC أو DOCX أو JPG أو PNG.",
     errSize: "يجب ألا يتجاوز حجم كل ملف 10 ميغابايت.",
     errTooMany: "يمكنك رفع 5 مرفقات إضافية كحد أقصى.",
-    errSend: "عذراً، لم ينجح الإرسال. حاول مرة أخرى أو اتصل بنا.",
+    errSend: "عذراً، لم ينجح الإرسال. حاول مرة أخرى.",
     errLimit: "محاولات كثيرة. يرجى الانتظار قليلاً ثم المحاولة مجدداً.",
   },
   tr: {
@@ -264,7 +264,7 @@ const TEXT = {
     errAttachmentType: "Ekler PDF, DOC, DOCX, JPG veya PNG dosyası olmalıdır.",
     errSize: "Her dosya en fazla 10 MB olabilir.",
     errTooMany: "En fazla 5 ek belge yükleyebilirsiniz.",
-    errSend: "Maalesef olmadı. Lütfen tekrar deneyin veya bizi arayın.",
+    errSend: "Maalesef olmadı. Lütfen tekrar deneyin.",
     errLimit: "Çok fazla deneme. Lütfen biraz bekleyip tekrar deneyin.",
   },
 } as const;
