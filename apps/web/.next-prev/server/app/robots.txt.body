@@ -1,0 +1,7 @@
+User-Agent: *
+Allow: /
+Disallow: /api/
+Disallow: /*/konto/
+Disallow: /*/dashboard/
+Disallow: /*/admin/
+

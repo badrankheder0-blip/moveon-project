@@ -218,7 +218,7 @@ export const ADMIN_PAGE_GROUPS = [
   { key: "grpOps", pages: ["overview", "orders", "quotes", "inbox", "calendar", "map", "staff", "customers"] },
   { key: "grpBiz", pages: ["invoices", "reports", "claims", "reviews", "messages", "notify"] },
   { key: "grpCat", pages: ["services", "pricing", "zones", "discounts"] },
-  { key: "grpSite", pages: ["pages", "home", "site", "faq", "content"] },
+  { key: "grpSite", pages: ["pages", "home", "site", "faq", "jobs", "content"] },
   { key: "grpSys", pages: ["settings"] },
 ] as const;
 
@@ -264,6 +264,8 @@ export const PAGE_CAPABILITIES: Record<AdminPage, readonly Permission[]> = {
   site: ["content.write"],
   // The website FAQ: its categories and questions are CMS content.
   faq: ["content.write"],
+  // Job postings and the applications (with CVs) sent for them.
+  jobs: ["content.write"],
   content: ["theme.write", "content.write"],
   // Settings carries the logo as well as the company data.
   settings: ["settings.write", "theme.write"],

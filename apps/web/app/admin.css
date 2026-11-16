@@ -347,3 +347,16 @@
 .a-faq-add:hover { background: #fff1f3; }
 .a-faq-delcat { white-space: nowrap; min-height: 34px; padding: 0 12px; border: 1px solid #f3c2ca; border-radius: 8px; background: #ffffff; color: #d71635; font-size: 12px; font-weight: 650; }
 .a-faq-delcat:hover { background: #fff1f3; }
+/* Rich-text field (Stellen & Bewerbungen): a toolbar over an editable box. */
+.a-rte { border: 1px solid var(--a-input); border-radius: 8px; background: #ffffff; overflow: hidden; }
+.a-rte:focus-within { border-color: var(--a-red); }
+.a-rte-bar { display: flex; gap: 2px; flex-wrap: wrap; padding: 4px; border-bottom: 1px solid var(--a-line); background: var(--a-fill); }
+.a-rte-bar button { min-width: 30px; height: 28px; display: grid; place-items: center; padding: 0 6px; border: 0; border-radius: 6px; background: transparent; color: var(--a-text2); font-size: 13px; }
+.a-rte-bar button:hover { background: #ffffff; color: var(--a-ink); }
+.a-rte-box { min-height: 110px; max-height: 340px; overflow-y: auto; padding: 10px 12px; font-size: 13px; line-height: 1.6; color: var(--a-ink); outline: none; }
+.a-rte-box :is(p, ul, ol, h3) { margin: 0 0 8px; }
+.a-rte-box h3 { font-size: 14.5px; font-weight: 650; }
+.a-rte-box :is(ul, ol) { padding-inline-start: 22px; }
+.a-rte-box ul { list-style: disc; }
+.a-rte-box ol { list-style: decimal; }
+.a-rte-box a { color: var(--a-red); text-decoration: underline; }

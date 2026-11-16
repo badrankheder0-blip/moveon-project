@@ -12,7 +12,7 @@ export type AdminView =
   | "overview" | "customers" | "users" | "orders" | "quotes" | "inbox" | "calendar" | "map" | "staff"
   | "invoices" | "reports" | "claims" | "reviews" | "messages" | "notify"
   | "services" | "catalog" | "pricing" | "zones" | "discounts"
-  | "pages" | "home" | "site" | "faq" | "content"
+  | "pages" | "home" | "site" | "faq" | "jobs" | "content"
   | "settings";
 
 export const ADMIN_PATHS: Record<AdminView, StaffRoutePath> = {
@@ -40,6 +40,7 @@ export const ADMIN_PATHS: Record<AdminView, StaffRoutePath> = {
   home: "/admin/inhalte/startseite",
   site: "/admin/buchungsseite",
   faq: "/admin/faq",
+  jobs: "/admin/stellen",
   content: "/admin/bilder",
   settings: "/admin/einstellungen",
 };
@@ -73,6 +74,7 @@ export const ADMIN_ICONS: Record<AdminView | "usermgmt", string> = {
   home: "M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z",
   site: "M3 4h18v16H3zM3 9h18M6.5 6.5h.01M9.5 6.5h.01M8 13h8M8 16h5",
   faq: "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01",
+  jobs: "M4 7h16v13H4zM9 7V4h6v3M4 12h16",
   content: "M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM8.5 10.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM21 15l-5-5L5 21",
   settings: "M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6",
 };
@@ -82,7 +84,7 @@ export const ADMIN_GROUPS: { key: "grpOps" | "grpBiz" | "grpCat" | "grpSite" | "
   { key: "grpOps", items: ["overview", "usermgmt", "orders", "quotes", "inbox", "calendar", "map", "staff"] },
   { key: "grpBiz", items: ["invoices", "reports", "claims", "reviews", "messages", "notify"] },
   { key: "grpCat", items: ["services", "catalog", "pricing", "zones", "discounts"] },
-  { key: "grpSite", items: ["pages", "faq", "site", "content"] },
+  { key: "grpSite", items: ["pages", "faq", "jobs", "site", "content"] },
   { key: "grpSys", items: ["settings"] },
 ];
 
@@ -117,6 +119,7 @@ export const NAV_TEXT = defineText({
   home: { de: "Startseite", en: "Homepage", ar: "الصفحة الرئيسية", tr: "Ana sayfa" },
   site: { de: "Buchungsseite", en: "Booking site", ar: "موقع الحجز", tr: "Rezervasyon sitesi" },
   faq: { de: "FAQ", en: "FAQ", ar: "الأسئلة الشائعة", tr: "SSS" },
+  jobs: { de: "Stellen & Bewerbungen", en: "Jobs & applications", ar: "الوظائف والطلبات", tr: "İlanlar ve başvurular" },
   content: { de: "Inhalte & Bilder", en: "Content & images", ar: "المحتوى والصور", tr: "İçerik ve görseller" },
   settings: { de: "Einstellungen", en: "Settings", ar: "الإعدادات", tr: "Ayarlar" },
   brand: { de: "Admin", en: "Admin", ar: "لوحة الإدارة", tr: "Yönetim" },

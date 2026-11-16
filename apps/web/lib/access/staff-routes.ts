@@ -90,6 +90,8 @@ export const STAFF_ROUTES = [
   { path: "/admin/buchungsseite", permission: "content.write" },
   // The website FAQ's categories and questions: CMS content, like the pages.
   { path: "/admin/faq", permission: "content.write" },
+  // Job postings and the applications sent for them.
+  { path: "/admin/stellen", permission: "content.write" },
   { path: "/admin/bilder", permission: "theme.write" },
 ] as const satisfies readonly StaffRoute[];
 
