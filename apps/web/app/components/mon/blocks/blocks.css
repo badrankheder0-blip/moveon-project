@@ -251,9 +251,11 @@
 .mp-job-body { display: flex; flex-direction: column; gap: clamp(28px, 3.5vw, 40px); min-width: 0; }
 .mp-job-part { display: flex; flex-direction: column; gap: 12px; }
 .mp-job-part h2 { font-family: var(--m-head); font-size: clamp(21px, 2vw, 26px); font-weight: 700; line-height: 1.25; }
-.mp-rich { color: var(--m-text2); font-size: 16px; line-height: 1.8; display: flex; flex-direction: column; gap: 12px; overflow-wrap: anywhere; }
+.mp-rich { color: var(--m-text2); font-size: 16px; line-height: 1.8; overflow-wrap: anywhere; }
+.mp-rich > * + * { margin-top: 12px; }
 .mp-rich :is(h3, h4) { font-family: var(--m-head); font-size: 18px; font-weight: 700; color: var(--m-ink); line-height: 1.35; }
-.mp-rich :is(ul, ol) { padding-inline-start: 22px; display: flex; flex-direction: column; gap: 6px; }
+.mp-rich :is(ul, ol) { padding-inline-start: 22px; }
+.mp-rich li + li { margin-top: 6px; }
 .mp-rich ul { list-style: disc; }
 .mp-rich ol { list-style: decimal; }
 .mp-rich li::marker { color: var(--m-red); }

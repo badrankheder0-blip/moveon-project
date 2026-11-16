@@ -280,7 +280,7 @@ export default function JobsAdminPage() {
                           </button>
                         </td>
                         <td>
-                          <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", flexWrap: "wrap" }}>
+                          <div style={{ display: "flex", gap: 12, justifyContent: "flex-end", whiteSpace: "nowrap" }}>
                             <button type="button" className="a-link-btn" onClick={() => setSelected({ id: job.id, title: job.title })}>
                               {tx("showApps")}
                             </button>

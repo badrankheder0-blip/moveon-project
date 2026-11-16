@@ -40,6 +40,8 @@ export function RichTextEditor({
   // so the caret is never thrown to the start by a re-render.
   useEffect(() => {
     if (box.current && box.current.innerHTML !== value) box.current.innerHTML = value;
+    // New lines become <p> paragraphs rather than bare <div>s.
+    document.execCommand("defaultParagraphSeparator", false, "p");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
