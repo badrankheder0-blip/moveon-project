@@ -240,6 +240,33 @@
 .mp-role-tags span + span { background: #fff1f3; color: var(--m-red-d); }
 .mp-role button { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px; border: 0; border-radius: 10px; background: var(--m-red); color: #ffffff; font-size: 14px; font-weight: 700; white-space: nowrap; }
 .mp-role button:hover { background: var(--m-red-d); }
+.mp-role .mp-role-apply { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 10px; background: var(--m-red); color: #ffffff; font-size: 14px; font-weight: 700; white-space: nowrap; text-decoration: none; }
+.mp-role .mp-role-apply:hover { background: var(--m-red-d); }
+.mp-role-link { color: inherit; text-decoration: none; }
+.mp-role-link:hover { color: var(--m-red); }
+
+/* One job posting: its sections, with the facts and "Apply now" beside them. */
+.mp-job { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); align-items: start; }
+@media (min-width: 902px) { .mp-job { grid-template-columns: minmax(0, 1fr) 320px; } .mp-job-aside { position: sticky; top: 110px; } }
+.mp-job-body { display: flex; flex-direction: column; gap: clamp(28px, 3.5vw, 40px); min-width: 0; }
+.mp-job-part { display: flex; flex-direction: column; gap: 12px; }
+.mp-job-part h2 { font-family: var(--m-head); font-size: clamp(21px, 2vw, 26px); font-weight: 700; line-height: 1.25; }
+.mp-rich { color: var(--m-text2); font-size: 16px; line-height: 1.8; display: flex; flex-direction: column; gap: 12px; overflow-wrap: anywhere; }
+.mp-rich :is(h3, h4) { font-family: var(--m-head); font-size: 18px; font-weight: 700; color: var(--m-ink); line-height: 1.35; }
+.mp-rich :is(ul, ol) { padding-inline-start: 22px; display: flex; flex-direction: column; gap: 6px; }
+.mp-rich ul { list-style: disc; }
+.mp-rich ol { list-style: decimal; }
+.mp-rich li::marker { color: var(--m-red); }
+.mp-rich strong { color: var(--m-ink); font-weight: 700; }
+.mp-rich a { color: var(--m-red); text-decoration: underline; }
+.mp-job-aside { display: flex; flex-direction: column; gap: 12px; padding: 24px; border: 1px solid var(--m-line); border-radius: 20px; background: #ffffff; box-shadow: 0 20px 50px #1d222010; }
+.mp-job-aside dl { display: flex; flex-direction: column; gap: 10px; padding-bottom: 14px; border-bottom: 1px solid var(--m-line); }
+.mp-job-aside dl div { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; }
+.mp-job-aside dt { color: var(--m-muted); }
+.mp-job-aside dd { font-weight: 700; text-align: end; }
+.mp-job-aside b { font-family: var(--m-head); font-size: 20px; font-weight: 700; }
+.mp-job-aside p { color: var(--m-muted); font-size: 14.5px; line-height: 1.6; }
+.mp-job-aside .mp-btn { justify-content: center; }
 
 /* ── Moving plan: the checklist ─────────────────────────────────────── */
 .mp-check-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
@@ -285,6 +312,25 @@
 .mp-sent b { font-family: var(--m-head); font-size: 22px; font-weight: 700; }
 .mp-sent p { color: var(--m-text2); font-size: 15px; }
 .mp-sent button { padding: 0; border: 0; background: transparent; color: var(--m-red); font-size: 14px; font-weight: 700; }
+.mp-sent-link { color: var(--m-red); font-size: 14px; font-weight: 700; text-decoration: none; }
+
+/* The job application form: required marks, file pickers and the consent. */
+.mp-apply label > span em, .mp-file > span em { color: var(--m-red); font-style: normal; }
+.mp-file { display: flex; flex-direction: column; align-items: flex-start; gap: 7px; font-size: 12.5px; font-weight: 600; color: #252b28; }
+.mp-file > small { font-size: 12.5px; font-weight: 500; color: var(--m-muted); }
+.mp-file ul { align-self: stretch; display: flex; flex-direction: column; gap: 6px; }
+.mp-file li { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border: 1.5px solid #eceee9; border-radius: 12px; background: #f4f5f2; }
+.mp-file li b { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; font-weight: 600; }
+.mp-file li small { font-size: 12.5px; color: var(--m-muted); white-space: nowrap; }
+.mp-file li button { padding: 0; border: 0; background: transparent; color: var(--m-red); font-size: 13px; font-weight: 700; }
+.mp-file-pick { min-height: 46px; padding: 0 18px; border: 1.5px dashed #c9cdc4; border-radius: 12px; background: #ffffff; color: var(--m-ink); font-size: 14px; font-weight: 700; }
+.mp-file-pick:hover { border-color: var(--m-red); color: var(--m-red); }
+.mp-file-pick.is-miss { border-color: #e98a97; }
+.mp-form label.mp-consent { flex-direction: row; align-items: flex-start; gap: 10px; font-size: 13.5px; font-weight: 500; line-height: 1.55; color: var(--m-text2); }
+.mp-form label.mp-consent input { flex: none; width: 18px; height: 18px; margin-top: 2px; padding: 0; accent-color: var(--m-red); }
+.mp-form label.mp-consent a { color: var(--m-red); text-decoration: underline; }
+.mp-form label.mp-consent em { color: var(--m-red); font-style: normal; }
+.mp-form label.mp-consent.is-miss span { color: var(--m-red-d); }
 
 /* ── Legal ──────────────────────────────────────────────────────────── */
 .mp-legal { max-width: 1280px; margin: 0 auto; padding: clamp(40px, 5vw, 64px) clamp(20px, 4vw, 40px) 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
