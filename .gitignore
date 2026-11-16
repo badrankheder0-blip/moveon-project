@@ -51,3 +51,6 @@ backups/
 
 # TLS material for local MinIO — generated per machine
 infra/minio/certs/*.key
+
+# Previous Next.js builds kept beside .next during a deploy swap
+.next-*/
