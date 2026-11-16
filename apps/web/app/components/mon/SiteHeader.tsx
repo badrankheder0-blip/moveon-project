@@ -54,7 +54,15 @@ export function SiteHeader({ copy, logo, phone }: { copy: Copy; logo: string; ph
   const route = pathname.replace(/^\/[a-z]{2}(?=\/|$)/, "") || "/";
   const href = (value: string) => siteHref(locale, value);
 
-  const topLinks = readItems(copy, "topbar.links", ["label", "href"]);
+  // A link into the customer account ("Buchung verwalten", /konto…) is for
+  // signed-in customers only: a guest would only meet the sign-in page, and
+  // signing in has its own button. /konto itself still sends a guest to the
+  // sign-in page and back (middleware.ts).
+  const isAccountLink = (target: string) => /^\/konto(\/|$|\?|#)/.test(target.trim());
+  const showAccountLinks = Boolean(user) && !isStaff;
+  const allTopLinks = readItems(copy, "topbar.links", ["label", "href"]);
+  const topLinks = allTopLinks.filter((link) => showAccountLinks || !isAccountLink(link.href));
+  const accountLinks = showAccountLinks ? allTopLinks.filter((link) => isAccountLink(link.href)) : [];
   const navLinks = [{ label: copy["nav.home"] ?? "", href: "/" }, ...readItems(copy, "nav.links", ["label", "href"])].filter(
     (link) => link.label,
   );
@@ -348,6 +356,11 @@ export function SiteHeader({ copy, logo, phone }: { copy: Copy; logo: string; ph
               ))}
             </div>
             <div className="m-menu-foot">
+              {accountLinks.map((link) => (
+                <Link key={`${link.label}-${link.href}`} href={href(link.href)} onClick={() => setMenu(false)}>
+                  {link.label}
+                </Link>
+              ))}
               <Link href={accountHref} onClick={() => setMenu(false)}>
                 {accountLabel}
               </Link>

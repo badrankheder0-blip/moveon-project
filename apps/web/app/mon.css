@@ -170,7 +170,7 @@ html:has(.mon-site) { zoom: .85; }
 .m-menu-svcs { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; padding: 12px 0; }
 .mon-site .m-menu-svcs a { display: flex; align-items: center; gap: 8px; padding: 8px; border-radius: 10px; background: #f6f7f4; font-size: 13px; font-weight: 600; color: var(--m-ink); }
 .m-menu-svcs img { width: 34px; height: 34px; border-radius: 8px; object-fit: cover; }
-.m-menu-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 4px; }
+.m-menu-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 4px; }
 .mon-site .m-menu-foot > a { padding: 6px 0; font-size: 16px; font-weight: 600; color: var(--m-red); }
 .m-menu-langs { display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; background: var(--m-pill); }
 .m-menu-langs button { display: inline-flex; align-items: center; gap: 6px; min-width: 40px; height: 38px; padding: 0 10px; border: 0; border-radius: 999px; background: transparent; color: var(--m-text2); font-size: 13px; font-weight: 700; }

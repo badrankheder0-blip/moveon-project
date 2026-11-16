@@ -65,7 +65,7 @@ export const HOME_CONTENT: ContentSeed[] = [
   row("chrome", "topbar.links.5.label", "text", "Top bar — link 5: text", 10, { de: "Partnerschaften", en: "Partnerships", ar: "الشراكات", tr: "İş ortaklıkları" }),
   row("chrome", "topbar.links.5.href", "text", "Top bar — link 5: address", 11, same("/partner")),
   row("chrome", "topbar.links.6.label", "text", "Top bar — link 6: text", 12, { de: "Buchung verwalten", en: "Manage booking", ar: "إدارة الحجز", tr: "Rezervasyonu yönet" }),
-  row("chrome", "topbar.links.6.href", "text", "Top bar — link 6: address", 13, same("/konto")),
+  row("chrome", "topbar.links.6.href", "text", "Top bar — link 6: address", 13, same("/konto/auftraege")),
   row("chrome", "nav.home", "text", "Menu — first link (the homepage): text", 14, { de: "Startseite", en: "Home", ar: "الرئيسية", tr: "Ana sayfa" }),
   row("chrome", "nav.links.1.label", "text", "Menu — link 2: text", 15, { de: "Fragen", en: "Questions", ar: "أسئلة", tr: "Sorular" }),
   row("chrome", "nav.links.1.href", "text", "Menu — link 2: address", 16, same("/kontakt")),
