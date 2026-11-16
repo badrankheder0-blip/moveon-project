@@ -6,3 +6,4 @@ export * from "./support.js";
 
 export * from "./crew.js";
 export * from "./operations.js";
+export * from "./jobs.js";

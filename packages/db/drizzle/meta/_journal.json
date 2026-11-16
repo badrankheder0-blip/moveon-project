@@ -120,6 +120,13 @@
       "when": 1794310592950,
       "tag": "0016_special_items_from_rates",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1794850181845,
+      "tag": "0017_jobs",
+      "breakpoints": true
     }
   ]
 }
