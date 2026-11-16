@@ -27,6 +27,7 @@ import { cleaningNotes, commonAnswerLines, movingNotes, orderAnswers, requestJob
 import {
   INITIAL_PLAN,
   PHASES,
+  SERVICE_KEYS,
   WINDOWS,
   firstIncomplete,
   flow,
@@ -115,6 +116,16 @@ export interface BookingConfig {
   common?: CommonFlow;
 }
 
+/** The website's service ids (CMS, service pages) → the planner's service keys. */
+const SITE_SERVICE_KEYS: Record<string, ServiceKey> = {
+  moving: "moving",
+  painting: "renovation",
+  renovation: "renovation",
+  cleaning: "cleaning",
+  clearance: "disposal",
+  disposal: "disposal",
+};
+
 export function Planner({
   images,
   services,
@@ -156,6 +167,34 @@ export function Planner({
     }
     setRestored(true);
   }, []);
+
+  // A link from a service page names the customer type and the service
+  // (/rechner?type=business&services=renovation): the start screen is
+  // answered for the visitor and they land on "Wobei dürfen wir helfen?"
+  // with that service chosen. The site's own ids are accepted as well.
+  const deepLinked = useRef(false);
+  useEffect(() => {
+    if (!restored || deepLinked.current) return;
+    deepLinked.current = true;
+    const type = params.get("type");
+    if (type !== "private" && type !== "business") return;
+    const wanted = (params.get("services") ?? "")
+      .split(",")
+      .map((id) => SITE_SERVICE_KEYS[id.trim()] ?? id.trim())
+      .filter((key): key is ServiceKey => (SERVICE_KEYS as readonly string[]).includes(key));
+    const base = plan.customerType === type ? plan : { ...INITIAL_PLAN, answers: plan.answers };
+    dispatch({
+      type: "restore",
+      plan: {
+        ...base,
+        customerType: type,
+        services: wanted.length ? { ...INITIAL_PLAN.services, ...Object.fromEntries(wanted.map((key) => [key, true])) } : base.services,
+      },
+    });
+    router.replace(`/${locale}/rechner?step=services`, { scroll: false });
+    // Once, on arriving with the link.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [restored]);
 
   useEffect(() => {
     if (!restored) return;

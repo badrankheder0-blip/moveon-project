@@ -2,9 +2,8 @@ import type { Locale } from "@/lib/i18n/config";
 
 import { siteHref } from "../links";
 import { FaqBlock, StepsBlock, StoryBlock } from "./client";
-import { compareOf, ctaOf, loadPage, servicesOf, storiesOf, type PageCopy } from "./content";
+import { compareOf, ctaOf, loadPage, storiesOf, type PageCopy } from "./content";
 import { serviceFaq } from "./faq";
-import { blogText, serviceGuidesOf } from "./guides";
 import { PageHero } from "./PageHero";
 import { ReviewsBlock } from "./Reviews";
 import { cmsReviews } from "./reviewFeed";
@@ -12,12 +11,13 @@ import { Audiences, Cards, ClosingCta, Compare, PhotoGrid, PriceFactors } from "
 
 /**
  * A service page (the prototype's `#/services/:id`), the same for all four
- * services, as the prototype's v14 draws it: the hero with the clip, the
- * facts and the request toggle; what is included, as photo cards; private
- * or business; how it works, by customer type; the service's own day,
- * hour by hour; what the price is made of; for moving, before & after;
- * reviews and guides for this service; its FAQ; the services often booked
- * with it; the closing card.
+ * services, as the prototype's v14 draws it: the hero with the clip and the
+ * facts; what is included, as photo cards; private or business; how it
+ * works, by customer type; the service's own day, hour by hour; what the
+ * price is made of; for moving, before & after; reviews; its FAQ; the
+ * services often booked with it; the closing card. The "Add to request"
+ * toggle and the service's guides were taken off the page; the private and
+ * business buttons open the booking planner in that customer's flow.
  */
 
 export function heroOf(page: PageCopy) {
@@ -65,16 +65,6 @@ export async function ServicePage({ locale, section, compare = false }: { locale
     img: img(`pb.${i + 1}.img`) ?? "",
   }));
   const reviews = cmsReviews(page, id);
-  const names = new Map(servicesOf(page).map((s) => [s.id, s]));
-  const guides = serviceGuidesOf(page)
-    .filter((guide) => guide.service === id)
-    .map((guide) => ({
-      href: siteHref(locale, `/ratgeber/${guide.slug}`),
-      img: guide.img,
-      icon: guide.icon,
-      name: guide.title,
-      short: `${guide.excerpt} · ${guide.minutes} ${blogText(page, "svc.readMin")}`,
-    }));
   const together = items("together", ["name", "short", "icon", "href"]).map((item, i) => ({
     ...item,
     href: siteHref(locale, item.href),
@@ -85,10 +75,7 @@ export async function ServicePage({ locale, section, compare = false }: { locale
 
   return (
     <>
-      <PageHero
-        {...heroOf(page)}
-        cart={id && names.has(id) ? { id, add: c("hero.cartAdd"), added: c("hero.cartIn") } : undefined}
-      />
+      <PageHero {...heroOf(page)} />
       <Cards eyebrow={c("included.eyebrow")} title={c("included.title")} items={included} imaged />
       <Audiences eyebrow={c("pb.eyebrow")} title={c("pb.title")} sub="" tabs={pb} />
       <section style={{ position: "relative" }}>
@@ -114,7 +101,6 @@ export async function ServicePage({ locale, section, compare = false }: { locale
       />
       {compare ? <Compare {...compareOf(page)} /> : null}
       <ReviewsBlock eyebrow={c("reviews.eyebrow")} title={c("reviews.title")} items={reviews} max={3} more={link("reviews.more")} />
-      <PhotoGrid eyebrow={c("guides.eyebrow")} title={c("guides.title")} items={guides} more={blogText(page, "svc.more")} ratio="16 / 10" />
       {faq.length ? (
         <section style={{ position: "relative" }}>
           <FaqBlock eyebrow={c("faq.eyebrow")} eyebrowHref={siteHref(locale, "/faq")} title={c("faq.title")} items={faq} />
