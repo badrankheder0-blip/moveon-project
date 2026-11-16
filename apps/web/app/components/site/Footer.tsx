@@ -30,13 +30,13 @@ const SHELL = "mx-auto w-full max-w-[1440px] px-5 md:px-10 2xl:px-[120px]";
  * Pages neither bar links to.
  *
  * The header's links are all sections of the homepage, and its utility bar
- * covers About, Business accounts and Partnerships — which leaves these three
- * pages with no way in from anywhere on the site. They sit on their own quiet
- * row under the main one, so the frame's main row stays exactly as drawn.
+ * covers About, Business accounts and Partnerships — which leaves the contact
+ * page with no way in from the planner. It sits on its own quiet row under
+ * the main one, so the frame's main row stays exactly as drawn. (The moving
+ * plan and the guides were taken off the site.)
  */
 const MORE = [
   { path: "/kontakt", key: "nav.contact" },
-  { path: "/ratgeber", key: "nav.guide" },
 ] as const;
 
 /**

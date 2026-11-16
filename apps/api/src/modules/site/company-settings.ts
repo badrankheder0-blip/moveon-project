@@ -46,6 +46,15 @@ export const DASHBOARD_SETTINGS: SettingDefinition[] = [
   { key: "company.address", group: "company", kind: "text", label: "Address", sortOrder: 6, initial: (s) => s.get("contact.address") ?? "" },
   { key: "company.email", group: "company", kind: "email", label: "Email", sortOrder: 7, initial: (s) => s.get("contact.email") ?? "" },
   { key: "company.phone", group: "company", kind: "text", label: "Phone", sortOrder: 8, initial: (s) => s.get("contact.phone") ?? "" },
+  {
+    key: "company.whatsapp",
+    group: "company",
+    kind: "text",
+    label: "WhatsApp number",
+    description: "With country code, e.g. +49 151 2345678. The website's green WhatsApp button opens a chat with this number; empty hides the button.",
+    sortOrder: 8,
+    initial: blank,
+  },
   { key: "company.iban", group: "company", kind: "text", label: "IBAN", sortOrder: 9, initial: blank },
   { key: "company.bic", group: "company", kind: "text", label: "BIC", sortOrder: 10, initial: blank },
   { key: "company.bank", group: "company", kind: "text", label: "Bank", sortOrder: 11, initial: blank },
@@ -94,6 +103,7 @@ export const CONTACT_MIRROR: Record<string, string> = {
   "company.phone": "contact.phone",
   "company.email": "contact.email",
   "company.address": "contact.address",
+  "company.whatsapp": "contact.whatsapp",
 };
 
 let ready: Promise<void> | null = null;

@@ -3,12 +3,12 @@
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
-import ChatWidget from "./ChatWidget";
 import { CookieBanner } from "./mon/CookieBanner";
 import type { Copy } from "./mon/links";
 import { Motion } from "./mon/Motion";
 import { NetBackground } from "./mon/NetBackground";
 import { SiteHeader } from "./mon/SiteHeader";
+import { WhatsAppButton } from "./mon/WhatsAppButton";
 import { useI18n } from "@/lib/i18n/provider";
 
 /** What the header shows from the settings, read by the layout on the server. */
@@ -19,6 +19,8 @@ export interface ChromeSettings {
   mark: string;
   brandName: string;
   phone?: string | undefined;
+  /** `contact.whatsapp`: the floating button's number; none hides it. */
+  whatsapp?: string | undefined;
   jobsUrl?: string | undefined;
   /** `brand.background`: the symbol the network behind the page scatters. */
   background?: string | undefined;
@@ -85,7 +87,7 @@ export function SiteChrome({
 
   if (isBare || isApp) {
     // Auth fills the screen; the dashboard shell supplies its own navigation,
-    // and the assistant would overlap the content it floats above.
+    // and the WhatsApp button would overlap the content it floats above.
     return <>{children}</>;
   }
 
@@ -96,7 +98,7 @@ export function SiteChrome({
       <div className="m-main">{children}</div>
       {footer}
       <CookieBanner copy={chrome} locale={locale} />
-      <ChatWidget variant="pill" />
+      <WhatsAppButton number={settings.whatsapp} />
       <Motion />
     </div>
   );

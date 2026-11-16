@@ -83,9 +83,10 @@ registerPublisher("settings", {
       // The header, the contact page and the footer read `contact.*`; the
       // company's details are the same facts, so they move together. An
       // emptied company field leaves the public one as it was rather than
-      // blanking the phone number in the header.
+      // blanking the phone number in the header. The WhatsApp number is the
+      // exception: emptying it is how the office takes the button down.
       const mirror = CONTACT_MIRROR[key];
-      if (mirror && value.trim()) {
+      if (mirror && (value.trim() || key === "company.whatsapp")) {
         await tx.update(siteSettings).set({ value, updatedAt: now, updatedBy: actor.id }).where(eq(siteSettings.key, mirror));
       }
     }

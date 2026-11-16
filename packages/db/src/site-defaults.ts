@@ -216,6 +216,15 @@ export const SETTING_DEFAULTS: SettingSeed[] = [
     label: "Opening hours",
     sortOrder: 4,
   },
+  {
+    // The green WhatsApp button on every public page; empty hides it.
+    key: "contact.whatsapp",
+    value: "",
+    group: "contact",
+    kind: "text",
+    label: "WhatsApp number",
+    sortOrder: 5,
+  },
 
   // ── SEO ───────────────────────────────────────────────────────────────
   {

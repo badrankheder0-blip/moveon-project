@@ -170,6 +170,7 @@ export default async function LocaleLayout({
                   logo: logoSrc(site.brand["brand.logo"]),
                   mark,
                   brandName,
+                  whatsapp: site.contact["contact.whatsapp"],
                   jobsUrl: site.brand["brand.jobsUrl"],
                   // Settings › Background: the picture the network scatters.
                   background: logoSrc(site.brand["brand.background"], "/images/mon/home/symbol.webp"),
