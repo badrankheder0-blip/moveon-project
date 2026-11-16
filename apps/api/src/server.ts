@@ -36,6 +36,7 @@ import { complaintsRouter } from "./modules/complaints/complaints.routes.js";
 import { discountsRouter } from "./modules/discounts/discounts.routes.js";
 import { mailRouter } from "./modules/mail/mail.routes.js";
 import { faqRouter } from "./modules/faq/faq.routes.js";
+import { jobsRouter } from "./modules/jobs/jobs.routes.js";
 import { geocodingRouter } from "./modules/geocoding/geocoding.routes.js";
 import { healthRouter } from "./modules/health/health.routes.js";
 import { ordersRouter } from "./modules/orders/orders.routes.js";
@@ -117,6 +118,8 @@ export function createServer(): Express {
   app.use("/api/requests", requestsRouter);
   app.use("/api/availability", availabilityRouter);
   app.use("/api/faq", faqRouter);
+  // Job postings and applications; the dashboard's half sits under /api/jobs/admin.
+  app.use("/api/jobs", jobsRouter);
   // Theme and copy the website renders with; editable from the dashboard.
   app.use("/api/site", siteRouter);
   app.use("/api/reviews", reviewsRouter);

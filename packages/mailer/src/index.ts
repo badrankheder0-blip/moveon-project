@@ -4,6 +4,7 @@ export * from "./render.js";
 export { renderTemplate } from "./templates/registry.js";
 export type { PayloadFor, TemplateKey } from "./templates/registry.js";
 export type {
+  JobApplicationPayload,
   OrderStage,
   OrderStatusPayload,
   OtpPayload,

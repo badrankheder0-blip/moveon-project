@@ -119,6 +119,15 @@ const envSchema = z.object({
   MAIL_OUTBOX_DIR: z.string().min(1).default(".mail-outbox"),
 
   /**
+   * Where the CVs and attachments sent with job applications are kept.
+   *
+   * On the API's own disk rather than in the upload bucket: that bucket is
+   * public-read by design (it serves the site's photos), and an applicant's
+   * CV must only ever be readable through the dashboard's signed-in download.
+   */
+  JOB_FILES_DIR: z.string().min(1).default("/var/lib/mon/job-applications"),
+
+  /**
    * Photo uploads from the dashboard, stored in Amazon S3.
    *
    * All optional: without a bucket, region and key pair the upload endpoint

@@ -103,6 +103,17 @@ export const uploadRateLimit = createLimiter({
   byUserOrIp: true,
 });
 
+/**
+ * Job applications from the website. Each can carry up to 60 MB of files
+ * written to the API's disk, so a visitor gets a handful an hour: enough to
+ * apply for several roles, too few to fill the disk.
+ */
+export const jobApplicationRateLimit = createLimiter({
+  windowMs: 60 * 60_000,
+  max: 6,
+  prefix: "job-application",
+});
+
 /** Broad backstop for everything else. */
 export const globalRateLimit = createLimiter({
   windowMs: 60_000,

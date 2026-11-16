@@ -2,6 +2,7 @@ import { toLocale, type Locale } from "@mon/core";
 
 import type { RenderedTemplate } from "../types.js";
 import { orderStatusTemplate, type OrderStage, type OrderStatusPayload } from "./order-status.js";
+import { jobApplicationTemplate, type JobApplicationPayload } from "./job-application.js";
 import { otpTemplate, type OtpPayload } from "./otp.js";
 import { paymentReceiptTemplate, type PaymentReceiptPayload } from "./payment-receipt.js";
 import { passwordResetTemplate, type PasswordResetPayload } from "./password-reset.js";
@@ -26,6 +27,7 @@ const TEMPLATES = {
   "payment-receipt": paymentReceiptTemplate,
   "service-request": serviceRequestTemplate,
   "sales-quote": salesQuoteTemplate,
+  "job-application": jobApplicationTemplate,
 } as const;
 
 export type TemplateKey = keyof typeof TEMPLATES;
@@ -34,6 +36,7 @@ export type TemplateKey = keyof typeof TEMPLATES;
 export type PayloadFor<K extends TemplateKey> = Parameters<(typeof TEMPLATES)[K]>[0];
 
 export type {
+  JobApplicationPayload,
   OrderStage,
   OrderStatusPayload,
   OtpPayload,
