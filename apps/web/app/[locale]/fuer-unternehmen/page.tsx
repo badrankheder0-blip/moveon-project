@@ -2,17 +2,16 @@ import type { Metadata } from "next";
 
 import type { Locale } from "@/lib/i18n/config";
 import { StepsBlock } from "@/app/components/mon/blocks/client";
-import { fieldOf, formCopyOf, loadPage, pageMetadata } from "@/app/components/mon/blocks/content";
-import { FormBlock } from "@/app/components/mon/blocks/FormBlock";
+import { loadPage, pageMetadata } from "@/app/components/mon/blocks/content";
 import { PageHero } from "@/app/components/mon/blocks/PageHero";
 import { Cards } from "@/app/components/mon/blocks/Sections";
 import { cardItems, heroOf } from "@/app/components/mon/blocks/ServicePage";
 
 /**
  * Business accounts (the prototype's `#/business`): the hero, five reasons
- * companies choose m.on (in one balanced row), how a business move runs and the request form,
- * which reaches the website inbox as a business lead (`POST /api/leads`).
- * The prototype ends on the form, without the closing pair. CMS section
+ * companies choose m.on (in one balanced row) and how a business move runs.
+ * There is no request form on the page: the hero button and step 1 send
+ * companies to the booking planner's business flow. CMS section
  * `page-for-business`.
  */
 
@@ -33,20 +32,6 @@ export default async function ForBusinessPage({ params }: { params: { locale: Lo
       <section style={{ position: "relative" }}>
         <StepsBlock eyebrow={c("steps.eyebrow")} title={c("steps.title")} sets={[{ items: items("steps", ["title", "text"]) }]} />
       </section>
-      <FormBlock
-        anchor="form"
-        kind="business"
-        locale={params.locale}
-        copy={formCopyOf(page)}
-        fields={[
-          fieldOf(page, "company", "text", { required: true, wide: true }),
-          fieldOf(page, "name", "text", { required: true }),
-          fieldOf(page, "email", "email", { required: true }),
-          fieldOf(page, "phone", "tel"),
-          fieldOf(page, "size", "select"),
-          fieldOf(page, "message", "area"),
-        ]}
-      />
     </>
   );
 }
