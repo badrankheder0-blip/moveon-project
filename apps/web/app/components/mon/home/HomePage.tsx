@@ -113,7 +113,7 @@ export function HomePage({
             <h2 className="m-h2">{c("services.title")}</h2>
             <p className="m-lead">{c("services.sub")}</p>
           </div>
-          <ServicesCarousel cards={cards} nextLabel="Next" />
+          <ServicesCarousel cards={cards} />
         </div>
       </section>
     ) : null,

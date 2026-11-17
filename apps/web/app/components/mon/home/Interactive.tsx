@@ -155,68 +155,26 @@ export interface ServiceCard {
   img: string;
 }
 
-export function ServicesCarousel({ cards, nextLabel }: { cards: ServiceCard[]; nextLabel: string }) {
-  const row = useRef<HTMLDivElement>(null);
-  const step = useRef(1);
-  const [pages, setPages] = useState(1);
-  const [index, setIndex] = useState(0);
-
-  const measure = () => {
-    const el = row.current;
-    if (!el) return;
-    const first = el.firstElementChild;
-    step.current = first ? first.getBoundingClientRect().width + 24 : 1;
-    setPages(Math.max(1, Math.ceil((el.scrollWidth - el.clientWidth - 4) / step.current) + 1));
-  };
-
-  useEffect(() => {
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
-  }, []);
-
-  const rtl = () => getComputedStyle(row.current ?? document.body).direction === "rtl";
-
-  const go = (i: number) => {
-    row.current?.scrollTo({ left: (rtl() ? -1 : 1) * i * step.current, behavior: "smooth" });
-  };
-
+/**
+ * The service cards in one row that scrolls sideways when they don't fit
+ * (swipe on a phone). No arrow button or dots under it: the owner asked for
+ * the red arrow and the red dot to go.
+ */
+export function ServicesCarousel({ cards }: { cards: ServiceCard[] }) {
   return (
-    <>
-      <div
-        ref={row}
-        className="m-car"
-        onScroll={(event) => {
-          const left = Math.abs(event.currentTarget.scrollLeft);
-          const i = Math.round(left / step.current);
-          if (i !== index) setIndex(i);
-        }}
-      >
-        {cards.map((card, i) => (
-          <Link key={`${card.title}-${i}`} href={card.href} className="m-card" data-tilt="1">
-            <img src={card.img} alt="" />
-            <span className="m-card-shade" />
-            <b>{card.title}</b>
-            <span className="m-card-link">
-              {card.link}
-              <Arrow />
-            </span>
-          </Link>
-        ))}
-      </div>
-      {/* Shown even when every card fits, as the prototype does; "next" wraps to the start. */}
-      <div className="m-car-nav">
-        <span />
-        <div className="m-dots">
-          {Array.from({ length: pages }, (_, i) => (
-            <button key={i} type="button" aria-label={`${i + 1}`} aria-current={i === index} onClick={() => go(i)} />
-          ))}
-        </div>
-        <button type="button" className="m-next" aria-label={nextLabel} onClick={() => go((index + 1) % pages)}>
-          <Arrow size={18} />
-        </button>
-      </div>
-    </>
+    <div className="m-car">
+      {cards.map((card, i) => (
+        <Link key={`${card.title}-${i}`} href={card.href} className="m-card" data-tilt="1">
+          <img src={card.img} alt="" />
+          <span className="m-card-shade" />
+          <b>{card.title}</b>
+          <span className="m-card-link">
+            {card.link}
+            <Arrow />
+          </span>
+        </Link>
+      ))}
+    </div>
   );
 }
 

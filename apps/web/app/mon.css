@@ -263,12 +263,6 @@ html:has(.mon-site) { zoom: .85; }
 .m-card-shade { position: absolute; inset: 0; background: linear-gradient(to bottom, #000000a6 0%, #0000 32%, #0000 62%, #000000b3 100%); pointer-events: none; }
 .m-card b { position: absolute; top: 22px; inset-inline: 22px; font-family: var(--m-head); font-size: clamp(20px, 1.8vw, 25px); font-weight: 600; line-height: 1.2; letter-spacing: var(--m-ls); text-wrap: balance; pointer-events: none; }
 .m-card-link { position: absolute; bottom: 22px; inset-inline: 22px; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; pointer-events: none; }
-.m-car-nav { max-width: 1280px; margin: 0 auto; padding: 28px clamp(20px, 4vw, 40px) 0; display: grid; grid-template-columns: 56px 1fr 56px; align-items: center; }
-.m-dots { display: flex; justify-content: center; gap: 8px; }
-.m-dots button { width: 18px; height: 8px; padding: 0; border: 0; border-radius: 999px; background: #c9ccd0; transition: all .25s; }
-.m-dots button[aria-current="true"] { width: 28px; background: var(--m-red); }
-.m-next { display: grid; place-items: center; width: 52px; height: 52px; border: 0; border-radius: 50%; background: var(--m-red); color: #ffffff; justify-self: end; }
-.m-next:hover { background: var(--m-red-d); }
 
 /* ── Home: before / after ───────────────────────────────────────────── */
 .m-cmp { position: relative; margin-top: clamp(24px, 3vw, 36px); aspect-ratio: 4 / 5; border-radius: 26px; overflow: hidden; background: var(--m-ink); user-select: none; -webkit-user-select: none; box-shadow: 0 30px 70px #1d222026; }
