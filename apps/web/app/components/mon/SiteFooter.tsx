@@ -9,30 +9,53 @@ import { isExternal, readItems, siteHref, type Copy } from "./links";
  * lockup and a "Home" link, a rule, then the copyright line, the social icons
  * and the small links (guides, guarantees, legal pages).
  *
- * The words, the links and the four social addresses are rows of the CMS
- * section `chrome`; a social icon shows only while its address is filled in.
+ * The words, the links and the four social addresses (Instagram, TikTok,
+ * X/Twitter, Facebook) are rows of the CMS section `chrome`. The four icons
+ * always show, in each network's colour; one becomes a link once its address
+ * is filled in.
  */
 
-const SOCIAL_ICONS: Record<string, string> = {
-  instagram:
-    "M7 2.5h10A4.5 4.5 0 0 1 21.5 7v10a4.5 4.5 0 0 1-4.5 4.5H7A4.5 4.5 0 0 1 2.5 17V7A4.5 4.5 0 0 1 7 2.5zM12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM17.5 6.5h0",
-  youtube:
-    "M21.6 7.2a2.6 2.6 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4a2.6 2.6 0 0 0-1.8 1.8C2 8.8 2 12 2 12s0 3.2.4 4.8a2.6 2.6 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.6 2.6 0 0 0 1.8-1.8c.4-1.6.4-4.8.4-4.8s0-3.2-.4-4.8zM10 15V9l5.2 3z",
-  facebook: "M15 3h-2.5A4.5 4.5 0 0 0 8 7.5V10H5.5v3.5H8V21h3.5v-7.5H14l.8-3.5h-3.3V7.8c0-.7.5-1.3 1.2-1.3H15z",
-  tiktok: "M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5M14 3c.4 2.6 2.4 4.6 5 5",
-};
+/** The four networks, in the order the footer shows them. */
+const SOCIALS = ["instagram", "tiktok", "twitter", "facebook"] as const;
+type Social = (typeof SOCIALS)[number];
 
-/** Each network's own colour, and its soft shadow, as the prototype draws the circles. */
-const SOCIAL_COLOURS: Record<string, [string, string]> = {
-  instagram: ["linear-gradient(45deg,#feda75 0%,#fa7e1e 25%,#d62976 50%,#962fbf 75%,#4f5bd5 100%)", "#d6297640"],
-  youtube: ["#ff0000", "#ff000040"],
-  facebook: ["#1877f2", "#1877f240"],
+const SOCIAL_LABEL: Record<Social, string> = { instagram: "Instagram", tiktok: "TikTok", twitter: "X (Twitter)", facebook: "Facebook" };
+
+/** Each network's logo, white on its own colour. */
+function SocialGlyph({ name }: { name: Social }) {
+  if (name === "instagram") {
+    return (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="5" />
+        <circle cx="12" cy="12" r="4.2" />
+        <circle cx="17.3" cy="6.7" r=".6" fill="currentColor" />
+      </svg>
+    );
+  }
+  const d: Record<Exclude<Social, "instagram">, string> = {
+    tiktok:
+      "M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z",
+    twitter: "M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z",
+    facebook: "M14 22v-8.4h2.8l.45-3.3H14V8.2c0-.95.27-1.6 1.63-1.6h1.73V3.66c-.3-.04-1.33-.13-2.53-.13-2.5 0-4.2 1.53-4.2 4.33v2.44H7.8v3.3h2.83V22z",
+  };
+  const size = name === "facebook" ? 20 : 15;
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className={name === "tiktok" ? "is-tiktok" : undefined}>
+      <path d={d[name]} />
+    </svg>
+  );
+}
+
+/** Each network's own colour, and its soft shadow. */
+const SOCIAL_COLOURS: Record<Social, [string, string]> = {
+  instagram: ["radial-gradient(circle at 30% 107%,#fdf497 0%,#fdf497 5%,#fd5949 45%,#d6249f 60%,#285aeb 90%)", "#d6249f40"],
   tiktok: ["#010101", "#01010133"],
+  twitter: ["#000000", "#00000033"],
+  facebook: ["#1877f2", "#1877f240"],
 };
 
 export function SiteFooter({ copy, locale, logo }: { copy: Copy; locale: Locale; logo: string }) {
   const links = readItems(copy, "footer.links", ["label", "href"]);
-  const socials = Object.keys(SOCIAL_ICONS).filter((name) => copy[`footer.${name}`]?.trim());
 
   return (
     <footer className="m-footer">
@@ -50,24 +73,22 @@ export function SiteFooter({ copy, locale, logo }: { copy: Copy; locale: Locale;
         </div>
         <div className="m-footer-bot">
           <small>{copy["footer.copyright"]}</small>
-          {socials.length ? (
-            <div className="m-socials">
-              {socials.map((name) => (
-                <a
-                  key={name}
-                  href={copy[`footer.${name}`]}
-                  aria-label={name}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ ["--so-bg" as string]: SOCIAL_COLOURS[name]?.[0], ["--so-sh" as string]: SOCIAL_COLOURS[name]?.[1] }}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d={SOCIAL_ICONS[name]} />
-                  </svg>
+          <div className="m-socials">
+            {SOCIALS.map((name) => {
+              const href = copy[`footer.${name}`]?.trim();
+              const style = { ["--so-bg" as string]: SOCIAL_COLOURS[name][0], ["--so-sh" as string]: SOCIAL_COLOURS[name][1] };
+              // Shown before its address is filled in, just not a link yet.
+              return href ? (
+                <a key={name} href={href} aria-label={SOCIAL_LABEL[name]} title={SOCIAL_LABEL[name]} target="_blank" rel="noopener noreferrer" style={style}>
+                  <SocialGlyph name={name} />
                 </a>
-              ))}
-            </div>
-          ) : null}
+              ) : (
+                <span key={name} role="img" aria-label={SOCIAL_LABEL[name]} title={SOCIAL_LABEL[name]} style={style}>
+                  <SocialGlyph name={name} />
+                </span>
+              );
+            })}
+          </div>
           <nav>
             {links.map((link) => (
               <Link
