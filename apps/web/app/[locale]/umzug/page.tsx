@@ -17,5 +17,5 @@ export async function generateMetadata({ params }: { params: { locale: Locale } 
 }
 
 export default function Page({ params }: { params: { locale: Locale } }) {
-  return <ServicePage locale={params.locale} section={SECTION} compare />;
+  return <ServicePage locale={params.locale} section={SECTION} compare day={false} />;
 }

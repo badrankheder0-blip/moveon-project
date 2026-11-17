@@ -48,7 +48,22 @@ export function cardItems(page: PageCopy, prefix: string) {
  * `compare`: the moving page's before & after. (The prototype's v14 also
  * repeats the moving day after the prices there; it is shown once.)
  */
-export async function ServicePage({ locale, section, compare = false }: { locale: Locale; section: string; compare?: boolean }) {
+/**
+ * `day`: whether the service's day timeline is shown. The Umzug page leaves it
+ * out (m.on does not commit to fixed times on a moving day); the homepage
+ * still shows the moving day among its tabs.
+ */
+export async function ServicePage({
+  locale,
+  section,
+  compare = false,
+  day = true,
+}: {
+  locale: Locale;
+  section: string;
+  compare?: boolean;
+  day?: boolean;
+}) {
   const page = await loadPage(locale, section);
   const { c, items, link, img } = page;
   const id = c("hero.id");
@@ -90,7 +105,7 @@ export async function ServicePage({ locale, section, compare = false }: { locale
           ]}
         />
       </section>
-      {story ? <StoryBlock stories={[story]} /> : null}
+      {day && story ? <StoryBlock stories={[story]} /> : null}
       <PriceFactors
         eyebrow={c("price.eyebrow")}
         title={c("price.title")}
