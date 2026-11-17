@@ -11,7 +11,8 @@ import { heroOf } from "@/app/components/mon/blocks/ServicePage";
 /**
  * Partnerships (the prototype's `#/partners`): the hero, the four services a
  * partner can book (the booking planner's pictures, name only), how a
- * partnership starts, and the partner request with an optional file, which
+ * partnership starts, and the partner request with an optional file (beside
+ * it, what the file should hold and what happens after sending), which
  * reaches the website inbox as a partner lead and is mailed to the office
  * with the file attached (`POST /api/leads/with-file`). CMS section
  * `page-partner`.
@@ -50,6 +51,12 @@ export default async function PartnerPage({ params }: { params: { locale: Locale
           fieldOf(page, "phone", "tel"),
           fieldOf(page, "message", "area"),
         ]}
+        guide={{
+          title: c("form.guide.title"),
+          items: items("form.guide", ["title", "text"]),
+          afterTitle: c("form.after.title"),
+          afterText: c("form.after.text"),
+        }}
         upload={{
           label: c("form.file"),
           hint: c("form.fileHint"),

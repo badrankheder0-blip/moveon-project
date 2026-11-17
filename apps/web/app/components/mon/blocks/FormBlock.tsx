@@ -57,6 +57,14 @@ export interface FormCopy {
   errSend: string;
 }
 
+/** Optional explanation under the intro: numbered points, then a short note box. */
+export interface FormGuide {
+  title: string;
+  items: { title: string; text: string }[];
+  afterTitle?: string;
+  afterText?: string;
+}
+
 const KNOWN = ["name", "email", "phone", "company", "message"];
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -67,6 +75,7 @@ export function FormBlock({
   copy,
   fields,
   upload,
+  guide,
 }: {
   anchor?: string;
   kind: "contact" | "business" | "partner" | "job";
@@ -75,6 +84,7 @@ export function FormBlock({
   fields: FieldSpec[];
   /** When given, the form takes one optional file and is sent with it (POST /api/leads/with-file). */
   upload?: UploadSpec;
+  guide?: FormGuide;
 }) {
   const sdk = useSdk();
   const [values, setValues] = useState<Record<string, string>>({});
@@ -163,6 +173,28 @@ export function FormBlock({
             <span className="m-eyebrow">{copy.eyebrow}</span>
             <h2 className="m-h2">{copy.title}</h2>
             <p>{copy.sub}</p>
+            {guide && guide.items.length ? (
+              <div className="mp-form-guide">
+                {guide.title ? <h3>{guide.title}</h3> : null}
+                <ol>
+                  {guide.items.map((item, i) => (
+                    <li key={i}>
+                      <span dir="ltr">{i + 1}</span>
+                      <div>
+                        <b>{item.title}</b>
+                        {item.text ? <p>{item.text}</p> : null}
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+                {guide.afterTitle || guide.afterText ? (
+                  <div className="mp-form-after">
+                    {guide.afterTitle ? <b>{guide.afterTitle}</b> : null}
+                    {guide.afterText ? <p>{guide.afterText}</p> : null}
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
           </div>
           {sent ? (
             <div className="mp-sent" role="status">
