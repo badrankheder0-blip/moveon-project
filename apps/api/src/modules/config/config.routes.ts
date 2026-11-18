@@ -9,6 +9,7 @@ import { asyncHandler } from "../../middleware/error-handler.js";
 import { requireAuth } from "../../middleware/require-auth.js";
 import { validate, validatedParams } from "../../middleware/validate.js";
 import { recordAudit } from "../audit/audit.service.js";
+import { revalidateWebsite } from "../site/site-cache.js";
 import { allPublishers, publisherFor } from "./publish-registry.js";
 
 const { configDrafts, configPublishes } = schema;
@@ -152,6 +153,9 @@ configRouter.post(
     });
 
     for (const domain of touched) await publisherFor(domain)?.afterPublish?.();
+    // Prices, services, areas and the like show on the website as well: every
+    // publish drops the website's cached pages, not only a content publish.
+    await revalidateWebsite();
 
     await recordAudit({
       actor,

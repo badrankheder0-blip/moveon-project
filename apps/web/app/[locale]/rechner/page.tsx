@@ -16,7 +16,7 @@ import { fetchSiteContent, fetchSiteTheme } from "@/lib/site/theme";
 async function fetchBookingServices(): Promise<BookingConfig | null> {
   const url = `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/api/services`;
   try {
-    const response = await fetch(url, { next: { revalidate: 30 } });
+    const response = await fetch(url, { next: { revalidate: 30, tags: ["cms"] } });
     if (!response.ok) {
       console.error(`[planner] services could not be loaded from ${url} — HTTP ${response.status}`);
       return null;

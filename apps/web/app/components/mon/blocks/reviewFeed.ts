@@ -25,7 +25,7 @@ interface PublishedReview {
 export async function fetchPublishedReviews(): Promise<PublishedReview[]> {
   const url = `${API}/api/reviews?limit=50`;
   try {
-    const response = await fetch(url, { next: { revalidate: 60 } });
+    const response = await fetch(url, { next: { revalidate: 60, tags: ["cms"] } });
     if (!response.ok) {
       console.error(`[reviews-feed] "reviews" could not be loaded from ${url} — HTTP ${response.status}`);
       return [];

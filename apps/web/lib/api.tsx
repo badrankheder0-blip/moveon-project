@@ -25,6 +25,7 @@ import {
 } from "react";
 
 import { HINT_COOKIE } from "./access/cookies";
+import { trackDraftWrite } from "@/lib/admin/pending";
 
 /**
  * The single point at which this app talks to the backend.
@@ -190,15 +191,24 @@ export function ApiProvider({ children }: { children: ReactNode }) {
   // discard the in-memory access token on every state change.
   const tokensRef = useRef(createBrowserTokenStore());
 
-  const sdk = useMemo(
-    () =>
-      createSdk({
-        baseUrl: API_URL,
-        tokens: tokensRef.current,
-        onSessionExpired: () => setState(SIGNED_OUT),
-      }),
-    [],
-  );
+  const sdk = useMemo(() => {
+    const created = createSdk({
+      baseUrl: API_URL,
+      tokens: tokensRef.current,
+      onSessionExpired: () => setState(SIGNED_OUT),
+    });
+    // Draft writes are tracked so "Save & publish" can wait for the last one
+    // (lib/admin/pending.ts).
+    const http = created.http as unknown as Record<"post" | "patch" | "delete", (path: string, ...rest: unknown[]) => Promise<unknown>>;
+    for (const method of ["post", "patch", "delete"] as const) {
+      const original = http[method].bind(created.http);
+      http[method] = (path: string, ...rest: unknown[]) => {
+        const write = original(path, ...rest);
+        return /\/drafts(\/|\?|$)/.test(path) ? trackDraftWrite(write) : write;
+      };
+    }
+    return created;
+  }, []);
 
   const applyUser = useCallback((user: AuthUser | null) => {
     if (!user) {

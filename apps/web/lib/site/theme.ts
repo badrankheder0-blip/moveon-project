@@ -174,7 +174,8 @@ async function readJson<T>(section: string, url: string, revalidate: number): Pr
 
   const request = (async (): Promise<T | null> => {
     try {
-      const response = await fetch(url, { next: { revalidate } });
+      // Tagged "cms": publishing in the dashboard drops these at once (app/api/cms-revalidate).
+      const response = await fetch(url, { next: { revalidate, tags: ["cms"] } });
 
       if (!response.ok) {
         record(section, url, `HTTP ${response.status} ${response.statusText}`.trimEnd());

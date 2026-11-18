@@ -5,6 +5,8 @@ import { useCallback, useMemo } from "react";
 
 import { useApi } from "@/lib/api";
 
+import { settleDraftWrites } from "./pending";
+
 /**
  * Configuration drafts (the API's `/api/admin/config`).
  *
@@ -84,7 +86,12 @@ export function usePublishing() {
   const after = () => client.invalidateQueries({ queryKey: ["admin", "config"] }).then(() => client.invalidateQueries());
 
   const publish = useMutation({
-    mutationFn: () => sdk.http.post<{ published: number }>("/api/admin/config/publish", {}),
+    // The field being edited stores its draft as the click takes its focus;
+    // wait for that (and any other draft write) before publishing.
+    mutationFn: async () => {
+      await settleDraftWrites();
+      return sdk.http.post<{ published: number }>("/api/admin/config/publish", {});
+    },
     onSuccess: after,
   });
   const discard = useMutation({

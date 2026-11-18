@@ -45,7 +45,7 @@ async function fetchPublishedReviews(): Promise<PublishedReview[]> {
   const url = `${API}/api/reviews?limit=20`;
 
   try {
-    const response = await fetch(url, { next: { revalidate: REVIEWS_REVALIDATE_SECONDS } });
+    const response = await fetch(url, { next: { revalidate: REVIEWS_REVALIDATE_SECONDS, tags: ["cms"] } });
     if (!response.ok) {
       reportFeedFailure("reviews", url, `HTTP ${response.status}`);
       return [];
