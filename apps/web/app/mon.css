@@ -281,7 +281,8 @@ html:has(.mon-site) { zoom: .85; }
 .m-split > div { flex: 1 1 400px; min-width: 0; }
 .m-split-text { display: flex; flex-direction: column; gap: 18px; max-width: 580px; }
 .m-paras { display: flex; flex-direction: column; gap: 10px; color: var(--m-muted); font-size: 15.5px; text-wrap: pretty; }
-.m-cov { position: relative; max-width: 620px; margin-inline: auto; }
+/* Opaque and isolated: the page's decorative network must not show through the map, where its dots read as misplaced cities. */
+.m-cov { position: relative; max-width: 620px; margin-inline: auto; background: #ffffff; isolation: isolate; }
 .m-cov > img { display: block; width: 100%; height: auto; mix-blend-mode: multiply; }
 .m-cov-layer { position: absolute; inset: 0; pointer-events: none; }
 .m-cov-svg { display: block; width: 100%; height: auto; overflow: visible; }

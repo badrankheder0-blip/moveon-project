@@ -7,6 +7,12 @@ import type { CSSProperties } from "react";
  * and once, with everything larger, for phones — and switched in CSS.
  *
  * SVG SMIL animations, so it moves without a line of client JavaScript.
+ *
+ * Everything sits in the map picture's own coordinates: the picture is
+ * 2862 × 2804, exactly twice the viewBox, and the SVG is laid over it at
+ * the same width, so a pin is on its city at every screen size. Each
+ * city's point is the real location (lat/lon projected onto the picture's
+ * NRW outline); a small red dot marks it under the tip of its pin.
  */
 
 const VW = 1431;
@@ -30,13 +36,14 @@ const CITIES: [number, number, string][] = [
 const round = (n: number) => Math.round(n * 10) / 10;
 
 function coverageSvg(small: boolean): string {
-  const pinScale = small ? 2.2 : 1.35;
+  const pinScale = small ? 1.75 : 1.35;
   const lineScale = small ? 2 : 1.3;
   const hubScale = small ? 1.7 : 1.25;
   const id = small ? "s" : "l";
   let lines = "";
   let dots = "";
   let pins = "";
+  let marks = "";
 
   CITIES.forEach(([x, y, name], i) => {
     const angle = Math.atan2(y - HUB_Y, x - HUB_X);
@@ -55,8 +62,11 @@ function coverageSvg(small: boolean): string {
       dots += `<circle r="${round(r * lineScale)}" fill="${RED}" opacity="0"><animateMotion dur="${dur}s" begin="${at}s" repeatCount="indefinite"><mpath href="#mcv${id}${i}"/></animateMotion><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.1;.88;1" dur="${dur}s" begin="${at}s" repeatCount="indefinite"/></circle>`;
     });
 
+    // The city's exact point, under the pin's tip.
+    marks += `<circle cx="${x}" cy="${y}" r="${round(5 * pinScale)}" fill="${RED}" stroke="#ffffff" stroke-width="${round(2.2 * pinScale)}"/>`;
+
     pins +=
-      `<g transform="translate(${x} ${y}) scale(${pinScale})"><ellipse cx="0" cy="2" rx="8" ry="2.2" fill="#1d2220" opacity=".16"/><text y="22" text-anchor="middle" font-family="Outfit,DM Sans,Arial,sans-serif" font-size="13" font-weight="700" fill="#1d2220" stroke="#ffffff" stroke-width="4" paint-order="stroke" stroke-linejoin="round">${name}</text>` +
+      `<g transform="translate(${x} ${y}) scale(${pinScale})"><text y="22" text-anchor="middle" font-family="Outfit,DM Sans,Arial,sans-serif" font-size="13" font-weight="700" fill="#1d2220" stroke="#ffffff" stroke-width="4" paint-order="stroke" stroke-linejoin="round">${name}</text>` +
       `<g class="mh"><title>${name}</title><g><animateTransform attributeName="transform" type="translate" values="0 0;0 -4;0 0" keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1" dur="${(2.6 + (i % 4) * 0.35).toFixed(2)}s" begin="-${(i * 0.41).toFixed(2)}s" repeatCount="indefinite"/>` +
       `<circle cy="-26" r="20" fill="none" stroke="${RED}" stroke-width="1.6" opacity="0"><animate attributeName="r" values="19;36;36" keyTimes="0;.22;1" dur="${dur}s" begin="${round(begin)}s" repeatCount="indefinite"/><animate attributeName="opacity" values=".85;0;0" keyTimes="0;.22;1" dur="${dur}s" begin="${round(begin)}s" repeatCount="indefinite"/></circle>` +
       `<path d="M0 0C-5 -7 -17 -15 -17 -26A17 17 0 1 1 17 -26C17 -15 5 -7 0 0Z" fill="${RED}"/><circle cy="-26" r="11.5" fill="#ffffff"/><path d="M-6 -21V-27L0 -32.5L6 -27V-21ZM-1.8 -21V-25H1.8V-21" fill="none" stroke="${RED}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></g></g></g>`;
@@ -64,7 +74,7 @@ function coverageSvg(small: boolean): string {
 
   const hub = `<g transform="translate(${HUB_X} ${HUB_Y}) scale(${hubScale})"><circle r="72" fill="none" stroke="${RED}" stroke-width="1.4"><animate attributeName="r" values="72;100" dur="2.6s" repeatCount="indefinite"/><animate attributeName="opacity" values=".7;0" dur="2.6s" repeatCount="indefinite"/></circle><circle r="72" fill="#ffffff" stroke="${RED}" stroke-width="1.2"/><circle r="84" fill="none" stroke="${RED}" stroke-width="1" stroke-dasharray="2 9" stroke-linecap="round" opacity=".55"><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="40s" repeatCount="indefinite"/></circle><circle r="63" fill="${RED}"/></g>`;
 
-  return `<svg class="m-cov-svg ${small ? "is-sm" : "is-lg"}" data-cov="1" viewBox="0 0 ${VW} ${VH}" role="img" aria-label="m.on coverage across North Rhine-Westphalia">${lines}${dots}${hub}${pins}</svg>`;
+  return `<svg class="m-cov-svg ${small ? "is-sm" : "is-lg"}" data-cov="1" viewBox="0 0 ${VW} ${VH}" role="img" aria-label="m.on coverage across North Rhine-Westphalia">${lines}${dots}${hub}${marks}${pins}</svg>`;
 }
 
 const SVG = coverageSvg(false) + coverageSvg(true);
