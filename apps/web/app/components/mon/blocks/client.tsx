@@ -107,15 +107,37 @@ export function StepsBlock({
   const list = useRef<HTMLOListElement>(null);
   const current = sets[tabs ? Math.min(tab, sets.length - 1) : 0] ?? sets[0];
 
-  // The prototype's steps(): a dot turns red once it passes 62% of the
-  // window, and the line below it fills in proportion.
+  // The prototype's steps(): a dot turns red once it passes a line at 62% of
+  // the window, and the line below it fills in proportion.
+  //
+  // On a short page the visitor can't scroll far enough for the last dots to
+  // reach that line, so they never turned red. The line therefore moves down
+  // as the page nears its end: it starts moving once the first dot is red and
+  // arrives, at the very bottom of the page, just past the last dot. Measured
+  // on every frame, so it holds whatever the page's length.
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let frame = 0;
     const update = () => {
       frame = 0;
-      const threshold = window.innerHeight * 0.62;
-      list.current?.querySelectorAll<HTMLLIElement>(":scope > li").forEach((li) => {
+      const items = Array.from(list.current?.querySelectorAll<HTMLLIElement>(":scope > li") ?? []);
+      const first = items[0];
+      const last = items[items.length - 1];
+      const base = window.innerHeight * 0.62;
+      let threshold = base;
+      if (first && last) {
+        const y = window.scrollY;
+        const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+        // Where the last dot sits in the window once the page is at its end.
+        const lastAtEnd = last.getBoundingClientRect().top + y - maxScroll + 23 + 4;
+        const deficit = Math.max(0, lastAtEnd - base);
+        if (deficit > 0) {
+          const start = Math.min(maxScroll, Math.max(0, first.getBoundingClientRect().top + y + 23 - base));
+          const t = maxScroll > start ? Math.max(0, Math.min(1, (y - start) / (maxScroll - start))) : y >= maxScroll - 1 ? 1 : 0;
+          threshold = base + deficit * t;
+        }
+      }
+      items.forEach((li) => {
         const box = li.getBoundingClientRect();
         const dot = li.querySelector<HTMLElement>("[data-sdot]");
         const fill = li.querySelector<HTMLElement>("[data-sfill]");
