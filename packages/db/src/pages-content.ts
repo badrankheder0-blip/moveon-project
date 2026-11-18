@@ -704,7 +704,7 @@ export const PAGES_CONTENT: ContentSeed[] = [
   row("page-about", "stats.2.value", "text", "Numbers — 2: figure (counts up from zero)", 172, { de: "98%", en: "98%", ar: "98%", tr: "98%" }),
   row("page-about", "stats.2.label", "text", "Numbers — 2: label", 173, { de: "pünktlich", en: "on time", ar: "في الموعد", tr: "zamanında" }),
   row("page-about", "stats.3.value", "text", "Numbers — 3: figure (counts up from zero)", 174, { de: "10+", en: "10+", ar: "+10", tr: "10+" }),
-  row("page-about", "stats.3.label", "text", "Numbers — 3: label", 175, { de: "Leistungen", en: "services", ar: "خدمة", tr: "hizmet" }),
+  row("page-about", "stats.3.label", "text", "Numbers — 3: label", 175, { de: "Leistungen", en: "services", ar: "خدمات", tr: "hizmet" }),
   row("page-about", "promises.eyebrow", "text", "Promises — small label", 18, { de: "WOFÜR WIR STEHEN", en: "WHAT WE STAND FOR", ar: "ما نؤمن به", tr: "NEYİ SAVUNUYORUZ" }),
   row("page-about", "promises.title", "text", "Promises — title", 19, { de: "Vier Versprechen bei jedem Auftrag.", en: "Four promises on every job.", ar: "أربعة وعود في كل عمل.", tr: "Her işte dört söz." }),
   row("page-about", "promises.1.icon", "text", "Promises — card 1: icon (SVG path)", 20, same("M18 6.5A7 7 0 1 0 18 17.5M4 10h10M4 14h10")),

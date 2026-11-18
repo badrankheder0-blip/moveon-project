@@ -311,6 +311,8 @@ html:has(.mon-site) { zoom: .85; }
 .m-stat { display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .m-stat-ring { display: grid; place-items: center; width: clamp(100px, 9vw, 116px); height: clamp(100px, 9vw, 116px); border: 1.5px solid #b9bdbb; border-radius: 50%; background: #ffffffb3; font-family: var(--m-head); font-size: clamp(20px, 2vw, 25px); font-weight: 600; white-space: nowrap; }
 .m-stat-label { font-family: var(--m-head); font-size: 16px; color: var(--m-muted3); }
+/* Phones: three rings side by side, evenly spaced, rather than two and one. */
+@media (max-width: 480px) { .m-stats { gap: 14px; padding-inline: 12px; } .m-stat { flex: 1 1 0; max-width: 112px; } .m-stat-ring { width: 92px; height: 92px; font-size: 19px; } .m-stat-label { font-size: 14px; text-align: center; } }
 
 /* ── Home: myths (flip cards) ───────────────────────────────────────── */
 .m-myths { margin-top: clamp(24px, 3vw, 36px); display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 270px), 1fr)); gap: 16px; }
