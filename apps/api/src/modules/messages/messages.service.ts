@@ -8,6 +8,7 @@ import { logger } from "../../lib/logger.js";
 import { dispatchDueNotifications } from "../notifications/notifications.service.js";
 import { sendFreeformMail } from "./freeform-mail.js";
 import { TEMPLATE_DEFAULTS, TEMPLATE_KEYS, type Channel, type TemplateKey } from "./messages.defaults.js";
+import { greetingName } from "../../lib/names.js";
 
 const { messageTemplates, messageLog, orders, invoices, reviews } = schema;
 
@@ -102,7 +103,11 @@ async function variablesFor(key: TemplateKey, orderId: string, locale: Locale, i
 
   const usesInvoice = key === "invoice_sent" || key === "payment_reminder";
   const vars: Record<string, string> = {
-    name: order.contactName,
+    // "Hallo {name}": the first name, as the greeting reads.
+    name: greetingName(order.contactFirstName, order.contactName),
+    firstName: greetingName(order.contactFirstName, order.contactName),
+    lastName: order.contactLastName ?? "",
+    fullName: order.contactName,
     ref: order.reference,
     service: SERVICE_NAMES[order.serviceType]?.[locale] ?? order.serviceType,
     date: formatDay(order.scheduledDate, locale, true),

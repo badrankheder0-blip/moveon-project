@@ -65,7 +65,8 @@ export interface FormGuide {
   afterText?: string;
 }
 
-const KNOWN = ["name", "email", "phone", "company", "message"];
+const KNOWN = ["name", "firstName", "lastName", "email", "phone", "company", "message"];
+const AUTOCOMPLETE: Record<string, string> = { name: "name", firstName: "given-name", lastName: "family-name", company: "organization" };
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function FormBlock({
@@ -241,7 +242,7 @@ export function FormBlock({
                         {...common}
                         type={field.type}
                         dir={field.type === "email" || field.type === "tel" ? "ltr" : "auto"}
-                        autoComplete={field.name === "name" ? "name" : field.type === "text" ? undefined : field.type}
+                        autoComplete={AUTOCOMPLETE[field.name] ?? (field.type === "text" ? undefined : field.type)}
                         onChange={(event) => set(event.target.value)}
                       />
                     )}

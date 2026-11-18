@@ -7,6 +7,7 @@ import { asyncHandler } from "../../middleware/error-handler.js";
 import { requireAuth } from "../../middleware/require-auth.js";
 import { requirePermission } from "../../middleware/require-permission.js";
 import { validate, validatedQuery } from "../../middleware/validate.js";
+import { splitName } from "../../lib/names.js";
 
 const { orders, users } = schema;
 
@@ -34,6 +35,8 @@ const listQuery = z.object({
 interface CustomerRow {
   email: string;
   name: string;
+  firstName: string;
+  lastName: string;
   phone: string;
   company: string;
   type: "private" | "business";
@@ -41,6 +44,13 @@ interface CustomerRow {
   bookedValue: string;
   lastOrderAt: string | null;
   hasAccount: boolean;
+}
+
+/** First and last name as stored, or the whole name split for older rows. */
+function halves(row: { name: string | null; firstName: string | null; lastName: string | null }) {
+  if (row.firstName || row.lastName) return { firstName: row.firstName ?? "", lastName: row.lastName ?? "" };
+  const parts = splitName(row.name);
+  return { firstName: parts.first, lastName: parts.last };
 }
 
 customersRouter.get(
@@ -58,6 +68,8 @@ customersRouter.get(
         .select({
           email: key,
           name: sql<string>`(array_agg(${orders.contactName} order by ${orders.createdAt} desc))[1]`,
+          firstName: sql<string | null>`(array_agg(${orders.contactFirstName} order by ${orders.createdAt} desc))[1]`,
+          lastName: sql<string | null>`(array_agg(${orders.contactLastName} order by ${orders.createdAt} desc))[1]`,
           phone: sql<string>`(array_agg(${orders.contactPhone} order by ${orders.createdAt} desc))[1]`,
           type: sql<"private" | "business">`(array_agg(${orders.customerType} order by ${orders.createdAt} desc))[1]`,
           // The booking flow keeps a business's name with the answers.
@@ -76,6 +88,8 @@ customersRouter.get(
           id: users.id,
           email: users.email,
           fullName: users.fullName,
+          firstName: users.firstName,
+          lastName: users.lastName,
           phone: users.phone,
           createdAt: users.createdAt,
         })
@@ -93,6 +107,7 @@ customersRouter.get(
       return {
         email: row.email,
         name: row.name || account?.fullName || "",
+        ...halves(row.name ? row : account ? { name: account.fullName, firstName: account.firstName, lastName: account.lastName } : row),
         phone: row.phone || account?.phone || "",
         company: row.company ?? "",
         type: row.type,
@@ -111,6 +126,7 @@ customersRouter.get(
       rows.push({
         email,
         name: account.fullName,
+        ...halves({ name: account.fullName, firstName: account.firstName, lastName: account.lastName }),
         phone: account.phone ?? "",
         company: "",
         type: "private",

@@ -5,6 +5,7 @@ import { and, asc, desc, eq, gte, inArray, lte, ne, notInArray, or, sql } from "
 import { AppError } from "../../lib/errors.js";
 import { recordAudit } from "../audit/audit.service.js";
 import type { RequestContext } from "./orders.service.js";
+import { joinName, splitName } from "../../lib/names.js";
 
 const { orders, teams, vehicles, dateChangeRequests, catalogItems, discountCodes, auditLogs } = schema;
 
@@ -233,8 +234,23 @@ function columnsFor(order: Order, answers: Record<string, string | null>): Parti
         if (value === "private" || value === "business") patch.customerType = value;
         break;
       case "contact.name":
-        if (value.length >= 2) patch.contactName = value.slice(0, 120);
+        if (value.length >= 2) {
+          const name = splitName(value.slice(0, 120));
+          patch.contactName = joinName(name.first, name.last);
+          patch.contactFirstName = name.first;
+          patch.contactLastName = name.last;
+        }
         break;
+      case "contact.firstName":
+      case "contact.lastName": {
+        if (!value) break;
+        const first = (id === "contact.firstName" ? value : (patch.contactFirstName ?? order.contactFirstName ?? splitName(order.contactName).first)).slice(0, 60);
+        const last = (id === "contact.lastName" ? value : (patch.contactLastName ?? order.contactLastName ?? splitName(order.contactName).last)).slice(0, 60);
+        patch.contactFirstName = first;
+        patch.contactLastName = last;
+        patch.contactName = joinName(first, last);
+        break;
+      }
       case "contact.email":
         if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) patch.contactEmail = value.toLowerCase();
         break;

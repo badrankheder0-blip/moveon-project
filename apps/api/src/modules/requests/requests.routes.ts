@@ -14,6 +14,7 @@ import { optionalAuth } from "../../middleware/require-auth.js";
 import { validate } from "../../middleware/validate.js";
 import { recordAudit } from "../audit/audit.service.js";
 import { businessDay, defaultVatRate, guessService, nextQuoteNumber } from "../sales-quotes/sales-quotes.service.js";
+import { nameParts } from "../../lib/names.js";
 
 /**
  * Requests the team prices by hand.
@@ -42,6 +43,9 @@ const requestBody = z.object({
   customerType: z.enum(["private", "business"]),
   company: z.string().trim().max(160).optional(),
   contactName: z.string().trim().min(2).max(120),
+  /** The halves of `contactName`, as the planner asks for them. */
+  contactFirstName: z.string().trim().min(1).max(60).optional(),
+  contactLastName: z.string().trim().min(1).max(60).optional(),
   contactEmail: z.string().trim().toLowerCase().email(),
   contactPhone: z.string().trim().min(5).max(40),
   locale: z.enum(["de", "en", "ar", "tr"]).default("de"),
@@ -153,11 +157,14 @@ requestsRouter.post(
       ].join("\n"),
     );
 
+    const contact = nameParts({ first: body.contactFirstName, last: body.contactLastName, full: body.contactName });
     const quote = await storeAsQuoteRequest(body, reference, jobBlocks, req.user ? { id: req.user.id, email: req.user.email } : null);
 
     const payload = {
       reference,
-      name: body.contactName,
+      name: contact.full,
+      firstName: contact.first,
+      lastName: contact.last,
       email: body.contactEmail,
       phone: body.contactPhone,
       company: body.company || undefined,
@@ -223,7 +230,10 @@ async function storeAsQuoteRequest(
         number: await nextQuoteNumber(tx),
         status: "request",
         source: "website",
-        customerName: body.contactName,
+        ...(() => {
+          const name = nameParts({ first: body.contactFirstName, last: body.contactLastName, full: body.contactName });
+          return { customerName: name.full, customerFirstName: name.first, customerLastName: name.last };
+        })(),
         customerEmail: body.contactEmail,
         customerPhone: body.contactPhone,
         company: body.company || null,

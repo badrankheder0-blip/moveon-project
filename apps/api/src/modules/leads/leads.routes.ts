@@ -17,6 +17,7 @@ import { requirePermission } from "../../middleware/require-permission.js";
 import { validate, validatedParams, validatedQuery } from "../../middleware/validate.js";
 import { recordAudit } from "../audit/audit.service.js";
 import { cleanFileName, detectJobFile, JOB_FILE_MAX_BYTES } from "../jobs/job-files.js";
+import { joinName } from "../../lib/names.js";
 
 const { leads, salesQuotes } = schema;
 
@@ -67,6 +68,9 @@ const leadBody = z
   .object({
     kind: z.enum(LEAD_KINDS),
     name: text(160),
+    /** The sender's first and last name, as the forms ask for them; `name` is made from them. */
+    firstName: text(80),
+    lastName: text(80),
     email: z.preprocess(blankToUndefined, z.string().trim().toLowerCase().email().max(254).optional()),
     phone: text(40),
     company: text(160),
@@ -82,6 +86,11 @@ const leadBody = z
      * and gets a polite answer and nothing stored.
      */
     website: z.string().optional(),
+  })
+  // One person's name, whichever way it came: two fields, or one older line.
+  .transform((body) => {
+    if (!body.firstName && !body.lastName) return body;
+    return { ...body, name: joinName(body.firstName, body.lastName) };
   })
   .superRefine((body, ctx) => {
     const need = (field: "name" | "email" | "message" | "company", ok: boolean) => {
@@ -135,6 +144,8 @@ leadsRouter.post(
         // The inbox needs something to call the sender by; the business form
         // asks for a company rather than a person.
         name: body.name ?? body.company ?? body.email ?? body.phone ?? "—",
+        firstName: body.firstName ?? null,
+        lastName: body.lastName ?? null,
         email: body.email ?? null,
         phone: body.phone ?? null,
         company: body.company ?? null,
@@ -220,6 +231,8 @@ leadsRouter.post(
       .values({
         kind: body.kind,
         name: body.name ?? body.company ?? body.email ?? body.phone ?? "—",
+        firstName: body.firstName ?? null,
+        lastName: body.lastName ?? null,
         email: body.email ?? null,
         phone: body.phone ?? null,
         company: body.company ?? null,
@@ -244,6 +257,8 @@ leadsRouter.post(
         payload: {
           kindLabel: KIND_LABEL[body.kind],
           name: body.name ?? body.company ?? "—",
+          firstName: body.firstName,
+          lastName: body.lastName,
           company: body.company,
           email: body.email,
           phone: body.phone,

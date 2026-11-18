@@ -46,7 +46,8 @@ export default async function PartnerPage({ params }: { params: { locale: Locale
         copy={formCopyOf(page)}
         fields={[
           fieldOf(page, "company", "text", { required: true, wide: true }),
-          fieldOf(page, "name", "text", { required: true }),
+          fieldOf(page, "firstName", "text", { required: true }),
+          fieldOf(page, "lastName", "text", { required: true }),
           fieldOf(page, "email", "email", { required: true }),
           fieldOf(page, "phone", "tel"),
           fieldOf(page, "message", "area"),

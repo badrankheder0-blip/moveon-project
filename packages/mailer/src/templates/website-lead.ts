@@ -9,6 +9,9 @@ export interface WebsiteLeadPayload {
   /** What the form was, in German: "Partneranfrage", … */
   kindLabel: string;
   name: string;
+  /** The halves of `name`, when the form asked for a person. */
+  firstName?: string | undefined;
+  lastName?: string | undefined;
   company?: string | undefined;
   email?: string | undefined;
   phone?: string | undefined;
@@ -22,7 +25,10 @@ export interface WebsiteLeadPayload {
 }
 
 export function websiteLeadTemplate(payload: WebsiteLeadPayload): RenderedTemplate {
-  const facts = [`Name: ${payload.name}`];
+  const facts =
+    payload.firstName || payload.lastName
+      ? [`Vorname: ${payload.firstName || "—"}`, `Nachname: ${payload.lastName || "—"}`]
+      : [`Name: ${payload.name}`];
   if (payload.company) facts.push(`Firma: ${payload.company}`);
   if (payload.email) facts.push(`E-Mail: ${payload.email}`);
   if (payload.phone) facts.push(`Telefon: ${payload.phone}`);

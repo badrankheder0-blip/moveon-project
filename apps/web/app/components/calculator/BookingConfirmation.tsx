@@ -9,6 +9,7 @@ import type { PriceBreakdown, QuoteInput } from "@mon/core";
 import { ApiError, useApi } from "@/lib/api";
 import { useI18n } from "@/lib/i18n/provider";
 import { CalcHeader, primaryButton, QuoteSummary } from "./CalcChrome";
+import { joinName, splitName } from "@/lib/name";
 
 /**
  * The confirmation screen — the last frame of the calculator.
@@ -102,7 +103,8 @@ export function BookingConfirmation() {
   const [quote, setQuote] = useState<StoredQuote | null>(null);
   const [loadFailed, setLoadFailed] = useState(false);
 
-  const [fullName, setFullName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -140,7 +142,9 @@ export function BookingConfirmation() {
   useEffect(() => {
     if (!user) return;
 
-    setFullName((current) => current || user.fullName);
+    const parts = splitName(user.fullName);
+    setFirstName((current) => current || parts.first);
+    setLastName((current) => current || parts.last);
     setEmail((current) => current || user.email);
   }, [user]);
 
@@ -237,7 +241,9 @@ export function BookingConfirmation() {
         await signUp({
           email: email.trim(),
           password,
-          fullName: fullName.trim(),
+          fullName: joinName(firstName, lastName),
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
           locale,
           quoteId: quote.id,
           ...(phone.trim() ? { phone: phone.trim() } : {}),
@@ -246,7 +252,9 @@ export function BookingConfirmation() {
 
       const order = await sdk.orders.create({
         quoteId: quote.id,
-        contactName: fullName.trim(),
+        contactName: joinName(firstName, lastName),
+        contactFirstName: firstName.trim(),
+        contactLastName: lastName.trim(),
         contactEmail: email.trim(),
         contactPhone: phone.trim(),
         scheduledDate,
@@ -278,7 +286,8 @@ export function BookingConfirmation() {
     Boolean(scheduledDate) &&
     Boolean(arrivalTime) &&
     consent &&
-    fullName.trim().length > 1 &&
+    firstName.trim().length > 0 &&
+    lastName.trim().length > 0 &&
     phone.trim().length > 4 &&
     /.+@.+\..+/.test(email) &&
     (Boolean(user) || password.length >= PASSWORD_MIN_LENGTH);
@@ -386,12 +395,21 @@ export function BookingConfirmation() {
               >
                 <div className="grid gap-4 sm:grid-cols-2">
                   <TextField
-                    id="booking-name"
-                    label={t("calc.confirm.fullName")}
-                    placeholder={t("calc.confirm.fullNamePlaceholder")}
-                    autoComplete="name"
-                    value={fullName}
-                    onChange={setFullName}
+                    id="booking-first-name"
+                    label={t("calc.confirm.firstName")}
+                    placeholder={t("calc.confirm.firstNamePlaceholder")}
+                    autoComplete="given-name"
+                    value={firstName}
+                    onChange={setFirstName}
+                  />
+
+                  <TextField
+                    id="booking-last-name"
+                    label={t("calc.confirm.lastName")}
+                    placeholder={t("calc.confirm.lastNamePlaceholder")}
+                    autoComplete="family-name"
+                    value={lastName}
+                    onChange={setLastName}
                   />
 
                   <TextField

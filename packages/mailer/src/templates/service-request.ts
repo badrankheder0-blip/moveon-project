@@ -15,6 +15,9 @@ export interface ServiceRequestPayload {
   audience: "customer" | "team";
   reference: string;
   name: string;
+  /** The halves of `name`; the customer's copy greets by the first. */
+  firstName?: string | undefined;
+  lastName?: string | undefined;
   email: string;
   phone: string;
   company?: string | undefined;
@@ -34,6 +37,13 @@ interface Copy {
   next: string;
   labels: { reference: string; contact: string; company: string; jobs: string; notes: string };
 }
+
+const GREETINGS: Record<Locale, (name: string) => string> = {
+  de: (n) => `Hallo ${n},`,
+  en: (n) => `Hello ${n},`,
+  ar: (n) => `مرحباً ${n}،`,
+  tr: (n) => `Merhaba ${n},`,
+};
 
 const CUSTOMER: Record<Locale, Copy> = {
   de: {
@@ -82,16 +92,21 @@ export function serviceRequestTemplate(
   const copy = team ? TEAM : CUSTOMER[locale];
   const layoutLocale: Locale = team ? "de" : locale;
 
-  const contact = [payload.name, payload.email, payload.phone].filter(Boolean).join(" · ");
+  const split = Boolean(payload.firstName || payload.lastName);
+  const contact = [team && split ? "" : payload.name, payload.email, payload.phone].filter(Boolean).join(" · ");
 
-  const facts = [`${copy.labels.reference}: ${payload.reference}`, `${copy.labels.contact}: ${contact}`];
+  const facts = [`${copy.labels.reference}: ${payload.reference}`];
+  if (team && split) facts.push(`Vorname: ${payload.firstName || "—"}`, `Nachname: ${payload.lastName || "—"}`);
+  facts.push(`${copy.labels.contact}: ${contact}`);
   if (payload.company) facts.push(`${copy.labels.company}: ${payload.company}`);
   if (team) {
     facts.push(`Kundentyp: ${payload.customerType === "business" ? "Geschäftskunde" : "Privatkunde"}`);
     if (payload.customerLocale) facts.push(`Sprache: ${payload.customerLocale}`);
   }
 
+  const greetName = payload.firstName?.trim() || payload.name.trim().split(/\s+/)[0] || "";
   const blocks: LayoutBlock[] = [
+    ...(!team && greetName ? [{ paragraph: GREETINGS[locale](greetName) }] : []),
     { paragraph: copy.intro },
     { lines: facts },
     { paragraph: `${copy.labels.jobs}:` },

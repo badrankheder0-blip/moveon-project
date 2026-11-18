@@ -1,6 +1,7 @@
 import { defineText, type TextFn } from "@/lib/admin/text";
 
 import type { OrderDetail } from "./types";
+import { splitName } from "@/lib/name";
 
 /**
  * Every booking answer of an order, laid out as the prototype's booking flow
@@ -113,6 +114,8 @@ export const BOOKING_TEXT = defineText({
   f_window: { de: "Ankunftszeit", en: "Arrival window", ar: "وقت الوصول", tr: "Varış aralığı" },
   f_second: { de: "Zweiter Tag", en: "Second day", ar: "اليوم الثاني", tr: "İkinci gün" },
   f_name: { de: "Vollständiger Name", en: "Full name", ar: "الاسم الكامل", tr: "Ad soyad" },
+  f_firstName: { de: "Vorname", en: "First name", ar: "الاسم الأول", tr: "Ad" },
+  f_lastName: { de: "Nachname", en: "Last name", ar: "الكنية", tr: "Soyad" },
   f_phone: { de: "Telefon", en: "Phone", ar: "الهاتف", tr: "Telefon" },
   f_email: { de: "E-Mail", en: "Email", ar: "البريد الإلكتروني", tr: "E-posta" },
   f_pay: { de: "Zahlungsart", en: "Payment method", ar: "طريقة الدفع", tr: "Ödeme yöntemi" },
@@ -531,7 +534,8 @@ const STEPS: StepDef[] = [
     svc: "*",
     name: "s_payment",
     fields: [
-      { id: "contact.name", type: "text", req: true, label: label("f_name") },
+      { id: "contact.firstName", type: "text", req: true, label: label("f_firstName") },
+      { id: "contact.lastName", type: "text", req: true, label: label("f_lastName") },
       { id: "contact.phone", type: "text", req: true, label: label("f_phone") },
       { id: "contact.email", type: "text", req: true, label: label("f_email") },
       {
@@ -635,6 +639,10 @@ function derived(id: string, o: OrderDetail, n: ParsedNotes, tx: Tx): Value {
       return o.scheduledSecondDate ?? "";
     case "contact.name":
       return o.contactName;
+    case "contact.firstName":
+      return o.contactFirstName ?? splitName(o.contactName).first;
+    case "contact.lastName":
+      return o.contactLastName ?? splitName(o.contactName).last;
     case "contact.phone":
       return o.contactPhone;
     case "contact.email":

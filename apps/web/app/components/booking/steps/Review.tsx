@@ -11,6 +11,7 @@ import { usePlanner } from "../context";
 import { overview, type OverviewBlock } from "../overview";
 import { SERVICE_ICON } from "./Start";
 import { Checkbox, ErrorText, Field, Icon, Note, describedBy, focusRing, inputClass, secondaryButton, textButton } from "../ui";
+import { splitName } from "@/lib/name";
 
 type Quotes = ReturnType<typeof usePlanQuotes>;
 
@@ -358,7 +359,9 @@ function RequestContact() {
       type: "patch",
       patch: (current) => ({
         contact: {
-          name: current.contact.name || user.fullName,
+          ...(current.contact.firstName.trim() || current.contact.lastName.trim()
+            ? { firstName: current.contact.firstName, lastName: current.contact.lastName }
+            : { firstName: splitName(user.fullName).first, lastName: splitName(user.fullName).last }),
           email: current.contact.email || user.email,
           phone: current.contact.phone,
         },
@@ -377,13 +380,16 @@ function RequestContact() {
         <p className="text-body-sm text-text-default">{t("plan.request.sub")}</p>
       </header>
       <div className="grid gap-4 md:grid-cols-2">
-        <Field id="request-name" label={fieldLabel("payment.name", t("plan.contact.name"))} required error={error("name")}>
-          <input id="request-name" autoComplete="name" className={inputClass} value={plan.contact.name} onChange={(event) => set({ name: event.target.value })} {...describedBy("request-name", error("name"))} />
+        <Field id="request-first-name" label={fieldLabel("payment.firstName", t("plan.contact.firstName"))} required error={error("firstName")}>
+          <input id="request-first-name" autoComplete="given-name" className={inputClass} value={plan.contact.firstName} onChange={(event) => set({ firstName: event.target.value })} {...describedBy("request-first-name", error("firstName"))} />
+        </Field>
+        <Field id="request-last-name" label={fieldLabel("payment.lastName", t("plan.contact.lastName"))} required error={error("lastName")}>
+          <input id="request-last-name" autoComplete="family-name" className={inputClass} value={plan.contact.lastName} onChange={(event) => set({ lastName: event.target.value })} {...describedBy("request-last-name", error("lastName"))} />
         </Field>
         <Field id="request-phone" label={fieldLabel("payment.phone", t("plan.contact.phone"))} required error={error("phone")}>
           <input id="request-phone" type="tel" autoComplete="tel" dir="ltr" className={inputClass} value={plan.contact.phone} onChange={(event) => set({ phone: event.target.value })} placeholder="+49 176 1234567" {...describedBy("request-phone", error("phone"))} />
         </Field>
-        <div className="md:col-span-2">
+        <div>
           <Field id="request-email" label={fieldLabel("payment.email", t("plan.contact.email"))} required error={error("email")}>
             <input id="request-email" type="email" autoComplete="email" dir="ltr" className={inputClass} value={plan.contact.email} onChange={(event) => set({ email: event.target.value })} {...describedBy("request-email", error("email"))} />
           </Field>

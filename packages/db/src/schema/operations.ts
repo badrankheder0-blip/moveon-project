@@ -48,7 +48,12 @@ export const leads = pgTable(
     kind: text("kind").notNull(),
     /** "new" | "read" | "replied" | "closed" */
     status: text("status").notNull().default("new"),
+    /** The sender's name as one line ("Vorname Nachname"), or the company. */
     name: text("name").notNull(),
+    // The halves of `name` when the form asked for a person (null for a
+    // company-only message, and for messages split before these existed).
+    firstName: text("first_name"),
+    lastName: text("last_name"),
     email: text("email"),
     phone: text("phone"),
     company: text("company"),
@@ -92,6 +97,9 @@ export const salesQuotes = pgTable(
     /** "website" | "phone" | "team" */
     source: text("source").notNull().default("team"),
     customerName: text("customer_name").notNull(),
+    // The halves of `customerName`, as the quote form edits them.
+    customerFirstName: text("customer_first_name"),
+    customerLastName: text("customer_last_name"),
     customerEmail: text("customer_email"),
     customerPhone: text("customer_phone"),
     company: text("company"),

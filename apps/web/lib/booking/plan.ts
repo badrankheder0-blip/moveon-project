@@ -9,6 +9,7 @@ import {
   type BookingCatalog,
   type CommonFlow,
 } from "./catalog";
+import { splitName } from "@/lib/name";
 
 /**
  * The booking planner's state.
@@ -282,9 +283,9 @@ export interface Plan {
 
   discountCode: string;
 
-  contact: { name: string; email: string; phone: string };
+  contact: { firstName: string; lastName: string; email: string; phone: string };
   billTo: "me" | "other";
-  other: { name: string; email: string; phone: string; address: string };
+  other: { firstName: string; lastName: string; email: string; phone: string; address: string };
   payMethod: PayMethod;
   terms: boolean;
   requestConsent: boolean;
@@ -310,6 +311,19 @@ export function initialDetails<S extends LocatedService>(service: S): JobDetails
   };
 
   return details[service];
+}
+
+/**
+ * A plan saved before first and last name were asked apart carries `name`;
+ * it is split once so the customer does not retype it.
+ */
+function withNameParts<T extends { firstName: string; lastName: string }>(value: T & { name?: unknown }): T {
+  const { name, ...rest } = value;
+  if (typeof name === "string" && name.trim() && !rest.firstName && !rest.lastName) {
+    const parts = splitName(name);
+    return { ...(rest as unknown as T), firstName: parts.first, lastName: parts.last };
+  }
+  return rest as unknown as T;
 }
 
 export const INITIAL_PLAN: Plan = {
@@ -345,9 +359,9 @@ export const INITIAL_PLAN: Plan = {
   photoNames: [],
   scheduleNotes: "",
   discountCode: "",
-  contact: { name: "", email: "", phone: "" },
+  contact: { firstName: "", lastName: "", email: "", phone: "" },
   billTo: "me",
-  other: { name: "", email: "", phone: "", address: "" },
+  other: { firstName: "", lastName: "", email: "", phone: "", address: "" },
   payMethod: "bank_transfer",
   terms: false,
   requestConsent: false,
@@ -403,8 +417,8 @@ export function restorePlan(saved: unknown): Plan {
     services: { ...INITIAL_PLAN.services, ...raw.services },
     locations: { ...INITIAL_PLAN.locations, ...raw.locations },
     moving: { ...INITIAL_PLAN.moving, ...raw.moving },
-    contact: { ...INITIAL_PLAN.contact, ...raw.contact },
-    other: { ...INITIAL_PLAN.other, ...raw.other },
+    contact: withNameParts({ ...INITIAL_PLAN.contact, ...raw.contact }),
+    other: withNameParts({ ...INITIAL_PLAN.other, ...raw.other }),
     visit: { ...INITIAL_PLAN.visit, ...raw.visit },
     customServices: Array.isArray(raw.customServices) ? raw.customServices.filter((key) => typeof key === "string") : [],
     customLocations: { ...raw.customLocations },
@@ -1122,7 +1136,8 @@ export function validateStep(plan: Plan, step: StepId, context: ValidationContex
 
     case "review":
       if (isRequestOnly(plan)) {
-        if (plan.contact.name.trim().split(/\s+/).length < 2) errors.name = "plan.error.fullName";
+        if (!plan.contact.firstName.trim()) errors.firstName = "plan.error.firstName";
+        if (!plan.contact.lastName.trim()) errors.lastName = "plan.error.lastName";
         if (!EMAIL.test(plan.contact.email.trim())) errors.email = "plan.error.email";
         if (plan.contact.phone.replace(/\D/g, "").length < 6) errors.phone = "plan.error.phone";
         if (!plan.requestConsent) errors.consent = "plan.error.requestConsent";
@@ -1131,10 +1146,12 @@ export function validateStep(plan: Plan, step: StepId, context: ValidationContex
 
     case "payment":
       if (!context.signedIn) errors.auth = "plan.error.signIn";
-      if (plan.contact.name.trim().split(/\s+/).length < 2) errors.name = "plan.error.fullName";
+      if (!plan.contact.firstName.trim()) errors.firstName = "plan.error.firstName";
+      if (!plan.contact.lastName.trim()) errors.lastName = "plan.error.lastName";
       if (plan.contact.phone.replace(/\D/g, "").length < 6) errors.phone = "plan.error.phone";
       if (billToOther(plan, context.common)) {
-        if (plan.other.name.trim().split(/\s+/).length < 2) errors.otherName = "plan.error.fullName";
+        if (!plan.other.firstName.trim()) errors.otherFirstName = "plan.error.firstName";
+        if (!plan.other.lastName.trim()) errors.otherLastName = "plan.error.lastName";
         if (!EMAIL.test(plan.other.email.trim())) errors.otherEmail = "plan.error.email";
         if (plan.other.address.trim().length < 8) errors.otherAddress = "plan.error.billingAddress";
       }

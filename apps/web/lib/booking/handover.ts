@@ -22,6 +22,7 @@ import {
   type Access,
   type Plan,
 } from "./plan";
+import { joinName } from "@/lib/name";
 
 /**
  * What the planner hands to the office, as text.
@@ -179,7 +180,7 @@ function commonLines(plan: Plan): string[] {
 
   if (plan.billTo === "other") {
     lines.push(
-      `Rechnung an: ${plan.other.name.trim()}, ${plan.other.email.trim()}${plan.other.phone.trim() ? `, ${plan.other.phone.trim()}` : ""}, ${plan.other.address.trim()}`,
+      `Rechnung an: ${joinName(plan.other.firstName, plan.other.lastName)}, ${plan.other.email.trim()}${plan.other.phone.trim() ? `, ${plan.other.phone.trim()}` : ""}, ${plan.other.address.trim()}`,
     );
   }
 

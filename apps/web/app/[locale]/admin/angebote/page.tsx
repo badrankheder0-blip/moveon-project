@@ -14,6 +14,7 @@ import { useI18n } from "@/lib/i18n/provider";
 import { logoSrc } from "@/lib/site/defaults";
 
 import css from "./page.module.css";
+import { splitName } from "@/lib/name";
 
 /**
  * Quotes & site visits, as the admin prototype runs them: every hand-priced
@@ -51,6 +52,8 @@ const TEXT = defineText({
   src_team: { de: "Vom Team angelegt", en: "Added by the team", ar: "أضافه الفريق", tr: "Ekip tarafından eklendi" },
   customer: { de: "Kunde", en: "Customer", ar: "الزبون", tr: "Müşteri" },
   name: { de: "Name", en: "Name", ar: "الاسم", tr: "Ad" },
+  firstName: { de: "Vorname", en: "First name", ar: "الاسم الأول", tr: "Ad" },
+  lastName: { de: "Nachname", en: "Last name", ar: "الكنية", tr: "Soyad" },
   company: { de: "Firma (optional)", en: "Company (optional)", ar: "الشركة (اختياري)", tr: "Şirket (isteğe bağlı)" },
   email: { de: "E-Mail", en: "Email", ar: "البريد الإلكتروني", tr: "E-posta" },
   phone: { de: "Telefon", en: "Phone", ar: "الهاتف", tr: "Telefon" },
@@ -121,6 +124,8 @@ interface Quote {
   status: Status;
   source: Source;
   customerName: string;
+  customerFirstName?: string | null;
+  customerLastName?: string | null;
   customerEmail: string | null;
   customerPhone: string | null;
   company: string | null;
@@ -434,7 +439,8 @@ function Quotes() {
 
 /** What the inputs hold while they are being typed in; saved on leaving the field. */
 interface Draft {
-  customerName: string;
+  customerFirstName: string;
+  customerLastName: string;
   company: string;
   customerEmail: string;
   customerPhone: string;
@@ -450,7 +456,8 @@ interface Draft {
 type LineDraft = { description: string; qty: string; unitNet: string };
 
 const draftOf = (q: Quote): Draft => ({
-  customerName: q.customerName ?? "",
+  customerFirstName: q.customerFirstName ?? splitName(q.customerName).first,
+  customerLastName: q.customerLastName ?? splitName(q.customerName).last,
   company: q.company ?? "",
   customerEmail: q.customerEmail ?? "",
   customerPhone: q.customerPhone ?? "",
@@ -519,7 +526,15 @@ function Detail({
 
   const saveText = (key: keyof Draft) => {
     const value = draft[key].trim();
-    const current = (key === "customerName" ? quote.customerName : quote[key]) ?? "";
+    if (key === "customerFirstName" || key === "customerLastName") {
+      // The two halves travel together; the API makes the whole name from them.
+      const first = draft.customerFirstName.trim();
+      const last = draft.customerLastName.trim();
+      const before = draftOf(quote);
+      if (first !== before.customerFirstName || last !== before.customerLastName) void save({ customerFirstName: first, customerLastName: last });
+      return;
+    }
+    const current = quote[key] ?? "";
     if (value !== current) void save({ [key]: value });
   };
 
@@ -665,7 +680,8 @@ function Detail({
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <b style={{ fontSize: 13, fontWeight: 650 }}>{tx("customer")}</b>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,180px),1fr))", gap: 10 }}>
-          {text("customerName", tx("name"))}
+          {text("customerFirstName", tx("firstName"))}
+          {text("customerLastName", tx("lastName"))}
           {text("company", tx("company"))}
           {text("customerEmail", tx("email"), { type: "email" })}
           {text("customerPhone", tx("phone"), { type: "tel" })}

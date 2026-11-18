@@ -21,6 +21,7 @@ import {
   primaryButton,
   textButton,
 } from "../ui";
+import { joinName, splitName } from "@/lib/name";
 
 /** Mirrors PASSWORD_MIN_LENGTH in `@mon/auth`, which is server-only. */
 const PASSWORD_MIN_LENGTH = 10;
@@ -33,12 +34,19 @@ const PASSWORD_MIN_LENGTH = 10;
  * shows the orders the planner books, and a customer who is already signed
  * in is never asked.
  */
+/** The contact's own name if typed, else the account's, split into its halves. */
+function nameOr(contact: { firstName: string; lastName: string }, fullName: string | null | undefined) {
+  if (contact.firstName.trim() || contact.lastName.trim()) return { firstName: contact.firstName, lastName: contact.lastName };
+  const parts = splitName(fullName);
+  return { firstName: parts.first, lastName: parts.last };
+}
+
 export function AuthPanel({ intro }: { intro?: string }) {
   const { t, locale } = useI18n();
   const { user, signIn, signUp, signOut } = useApi();
   const { dispatch } = usePlanner();
   const [mode, setMode] = useState<"signup" | "signin">("signup");
-  const [form, setForm] = useState({ name: "", email: "", phone: "", password: "", confirm: "" });
+  const [form, setForm] = useState({ firstName: "", lastName: "", email: "", phone: "", password: "", confirm: "" });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
@@ -66,7 +74,8 @@ export function AuthPanel({ intro }: { intro?: string }) {
     setError("");
 
     if (mode === "signup") {
-      if (form.name.trim().split(/\s+/).length < 2) return setError(t("plan.error.fullName"));
+      if (!form.firstName.trim()) return setError(t("plan.error.firstName"));
+      if (!form.lastName.trim()) return setError(t("plan.error.lastName"));
       if (form.password.length < PASSWORD_MIN_LENGTH) return setError(t("plan.account.passwordShort", { values: { min: PASSWORD_MIN_LENGTH } }));
       if (form.password !== form.confirm) return setError(t("plan.account.passwordMismatch"));
     }
@@ -79,7 +88,9 @@ export function AuthPanel({ intro }: { intro?: string }) {
           ? await signUp({
               email: form.email.trim(),
               password: form.password,
-              fullName: form.name.trim(),
+              fullName: joinName(form.firstName, form.lastName),
+              firstName: form.firstName.trim(),
+              lastName: form.lastName.trim(),
               locale,
               ...(form.phone.trim() ? { phone: form.phone.trim() } : {}),
             })
@@ -89,7 +100,7 @@ export function AuthPanel({ intro }: { intro?: string }) {
         type: "patch",
         patch: (current) => ({
           contact: {
-            name: current.contact.name || signed.fullName,
+            ...nameOr(current.contact, signed.fullName),
             email: signed.email,
             phone: current.contact.phone || form.phone.trim(),
           },
@@ -139,8 +150,11 @@ export function AuthPanel({ intro }: { intro?: string }) {
       <div className="grid gap-4 md:grid-cols-2">
         {mode === "signup" ? (
           <>
-            <Field id="auth-name" label={t("plan.contact.name")} required>
-              <input id="auth-name" autoComplete="name" className={inputClass} value={form.name} onChange={(event) => set({ name: event.target.value })} />
+            <Field id="auth-first-name" label={t("plan.contact.firstName")} required>
+              <input id="auth-first-name" autoComplete="given-name" className={inputClass} value={form.firstName} onChange={(event) => set({ firstName: event.target.value })} />
+            </Field>
+            <Field id="auth-last-name" label={t("plan.contact.lastName")} required>
+              <input id="auth-last-name" autoComplete="family-name" className={inputClass} value={form.lastName} onChange={(event) => set({ lastName: event.target.value })} />
             </Field>
             <Field id="auth-phone" label={t("plan.contact.phone")} required>
               <input id="auth-phone" type="tel" dir="ltr" autoComplete="tel" className={inputClass} value={form.phone} placeholder="+49 176 1234567" onChange={(event) => set({ phone: event.target.value })} />
@@ -263,7 +277,7 @@ export function PaymentStep() {
       type: "patch",
       patch: (current) => ({
         contact: {
-          name: current.contact.name || user.fullName,
+          ...nameOr(current.contact, user.fullName),
           email: user.email,
           phone: current.contact.phone,
         },
@@ -288,8 +302,11 @@ export function PaymentStep() {
 
       <Section title={t("plan.payment.whoTitle")} sub={t("plan.payment.whoSub")}>
         <div className="grid gap-4 md:grid-cols-2">
-          <Field id="contact-name" label={fieldLabel("payment.name", t("plan.contact.name"))} required error={error("name")}>
-            <input id="contact-name" autoComplete="name" className={inputClass} value={plan.contact.name} onChange={(event) => setContact({ name: event.target.value })} {...describedBy("contact-name", error("name"))} />
+          <Field id="contact-first-name" label={fieldLabel("payment.firstName", t("plan.contact.firstName"))} required error={error("firstName")}>
+            <input id="contact-first-name" autoComplete="given-name" className={inputClass} value={plan.contact.firstName} onChange={(event) => setContact({ firstName: event.target.value })} {...describedBy("contact-first-name", error("firstName"))} />
+          </Field>
+          <Field id="contact-last-name" label={fieldLabel("payment.lastName", t("plan.contact.lastName"))} required error={error("lastName")}>
+            <input id="contact-last-name" autoComplete="family-name" className={inputClass} value={plan.contact.lastName} onChange={(event) => setContact({ lastName: event.target.value })} {...describedBy("contact-last-name", error("lastName"))} />
           </Field>
           <Field id="contact-phone" label={fieldLabel("payment.phone", t("plan.contact.phone"))} required error={error("phone")} hint={t("plan.payment.phoneHint")}>
             <input id="contact-phone" type="tel" dir="ltr" autoComplete="tel" className={inputClass} value={plan.contact.phone} placeholder="+49 176 1234567" onChange={(event) => setContact({ phone: event.target.value })} {...describedBy("contact-phone", error("phone"))} />
@@ -312,8 +329,11 @@ export function PaymentStep() {
 
         {plan.billTo === "other" && fieldShown("payment.billTo") ? (
           <div className="grid gap-4 md:grid-cols-2">
-            <Field id="other-name" label={t("plan.contact.name")} required error={error("otherName")}>
-              <input id="other-name" className={inputClass} value={plan.other.name} onChange={(event) => setOther({ name: event.target.value })} {...describedBy("other-name", error("otherName"))} />
+            <Field id="other-first-name" label={t("plan.contact.firstName")} required error={error("otherFirstName")}>
+              <input id="other-first-name" className={inputClass} value={plan.other.firstName} onChange={(event) => setOther({ firstName: event.target.value })} {...describedBy("other-first-name", error("otherFirstName"))} />
+            </Field>
+            <Field id="other-last-name" label={t("plan.contact.lastName")} required error={error("otherLastName")}>
+              <input id="other-last-name" className={inputClass} value={plan.other.lastName} onChange={(event) => setOther({ lastName: event.target.value })} {...describedBy("other-last-name", error("otherLastName"))} />
             </Field>
             <Field id="other-email" label={t("plan.payment.otherEmail")} required error={error("otherEmail")}>
               <input id="other-email" type="email" dir="ltr" className={inputClass} value={plan.other.email} onChange={(event) => setOther({ email: event.target.value })} {...describedBy("other-email", error("otherEmail"))} />

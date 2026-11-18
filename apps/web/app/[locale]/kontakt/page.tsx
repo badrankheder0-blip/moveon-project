@@ -34,7 +34,8 @@ export default async function ContactPage({ params }: { params: { locale: Locale
         locale={params.locale}
         copy={formCopyOf(page)}
         fields={[
-          fieldOf(page, "name", "text", { required: true }),
+          fieldOf(page, "firstName", "text", { required: true }),
+          fieldOf(page, "lastName", "text", { required: true }),
           fieldOf(page, "email", "email", { required: true }),
           fieldOf(page, "phone", "tel"),
           fieldOf(page, "topic", "select"),

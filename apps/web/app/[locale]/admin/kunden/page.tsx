@@ -31,6 +31,8 @@ const TEXT = defineText({
   },
   search: { de: "Kunden suchen", en: "Search customers", ar: "ابحث عن زبون", tr: "Müşteri ara" },
   customer: { de: "Kunde", en: "Customer", ar: "الزبون", tr: "Müşteri" },
+  firstName: { de: "Vorname", en: "First name", ar: "الاسم الأول", tr: "Ad" },
+  lastName: { de: "Nachname", en: "Last name", ar: "الكنية", tr: "Soyad" },
   phone: { de: "Telefon", en: "Phone", ar: "الهاتف", tr: "Telefon" },
   orders: { de: "Aufträge", en: "Orders", ar: "الطلبات", tr: "Siparişler" },
   spent: { de: "Buchungswert", en: "Booked value", ar: "قيمة الحجوزات", tr: "Rezervasyon tutarı" },
@@ -50,6 +52,8 @@ const TEXT = defineText({
 interface Customer {
   email: string;
   name: string;
+  firstName?: string;
+  lastName?: string;
   phone: string;
   company: string;
   type: "private" | "business";
@@ -60,7 +64,8 @@ interface Customer {
 }
 
 const COLS = {
-  who: { flex: "1 1 260px" },
+  who: { flex: "1 1 200px" },
+  last2: { flex: "0 1 150px" },
   phone: { flex: "0 0 150px" },
   n: { flex: "0 0 70px" },
   spent: { flex: "0 0 110px", textAlign: "end" as const },
@@ -122,7 +127,8 @@ export default function CustomersPage() {
             className={styles.head}
             style={{ gap: 18, padding: "11px 20px", background: "#fafaf7", borderBottom: "1px solid #e3e5de", fontSize: 10.5, fontWeight: 650, letterSpacing: "var(--a-ls-eye)", color: "#737870" }}
           >
-            <span style={COLS.who}>{tx("customer")}</span>
+            <span style={COLS.who}>{tx("firstName")}</span>
+            <span style={COLS.last2}>{tx("lastName")}</span>
             <span style={COLS.phone}>{tx("phone")}</span>
             <span style={COLS.n}>{tx("orders")}</span>
             <span style={COLS.spent}>{tx("spent")}</span>
@@ -146,12 +152,13 @@ export default function CustomersPage() {
                         {(c.name || "?").trim().charAt(0).toUpperCase()}
                       </span>
                       <span style={{ minWidth: 0, display: "flex", flexDirection: "column" }}>
-                        <b style={{ fontSize: 13.5, fontWeight: 600 }}>{c.name || "—"}</b>
+                        <b style={{ fontSize: 13.5, fontWeight: 600 }}>{c.firstName || c.name || "—"}</b>
                         <small style={{ fontSize: 11.5, color: "#737870", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                           <bdi>{sub}</bdi>
                         </small>
                       </span>
                     </span>
+                    <span style={{ ...COLS.last2, fontSize: 13.5, fontWeight: 600, color: "#252b28" }}>{c.firstName || c.lastName ? c.lastName || "—" : ""}</span>
                     <span dir="ltr" style={{ ...COLS.phone, fontSize: 12.5, color: "#252b28" }}>
                       {c.phone}
                     </span>

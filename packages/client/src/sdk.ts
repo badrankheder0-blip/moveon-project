@@ -52,6 +52,8 @@ export interface OrderSummary {
   status: OrderStatus;
   serviceType: ServiceType;
   contactName: string;
+  contactFirstName?: string | null;
+  contactLastName?: string | null;
   contactEmail: string;
   scheduledDate: string | null;
   totalGross: string;
@@ -212,6 +214,8 @@ export class MonSdk {
     create: (body: {
       quoteId: string;
       contactName: string;
+      contactFirstName?: string;
+      contactLastName?: string;
       contactEmail: string;
       contactPhone: string;
       scheduledDate: string;

@@ -3,6 +3,9 @@ import { z } from "zod";
 export const createOrderSchema = z.object({
   quoteId: z.string().uuid(),
   contactName: z.string().trim().min(2).max(120),
+  /** The halves of `contactName`, as the booking form asks for them. */
+  contactFirstName: z.string().trim().min(1).max(60).optional(),
+  contactLastName: z.string().trim().min(1).max(60).optional(),
   contactEmail: z.string().trim().toLowerCase().email(),
   contactPhone: z.string().trim().min(5).max(40),
   scheduledDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Expected YYYY-MM-DD."),

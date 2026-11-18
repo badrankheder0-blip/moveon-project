@@ -106,6 +106,10 @@ export const orders = pgTable(
 
     // ── Contact details captured at booking time ──
     contactName: text("contact_name").notNull(),
+    // The halves of `contactName` ("Vorname Nachname"), which every screen
+    // and mail still reads as the whole name.
+    contactFirstName: text("contact_first_name"),
+    contactLastName: text("contact_last_name"),
     contactEmail: text("contact_email").notNull(),
     contactPhone: text("contact_phone").notNull(),
 

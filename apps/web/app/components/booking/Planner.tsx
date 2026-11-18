@@ -66,6 +66,7 @@ import { ReviewStep } from "./steps/Review";
 import { ScheduleStep } from "./steps/Schedule";
 import { CustomerTypeCards, ServicesStep } from "./steps/Start";
 import { BackIcon, Dialog, ForwardIcon, Icon, focusRing, primaryButton, secondaryButton, textButton } from "./ui";
+import { joinName, splitName } from "@/lib/name";
 
 /**
  * The booking planner.
@@ -403,7 +404,16 @@ export function Planner({
     const response = await sdk.http.post<{ reference: string }>("/api/requests", {
       customerType: isBusiness(plan) ? "business" : "private",
       ...(plan.company.trim() ? { company: plan.company.trim() } : {}),
-      contactName: contact.name.trim() || user?.fullName || "",
+      ...(() => {
+        const fallback = splitName(user?.fullName);
+        const firstName = contact.firstName.trim() || fallback.first;
+        const lastName = contact.lastName.trim() || fallback.last;
+        return {
+          contactName: joinName(firstName, lastName),
+          ...(firstName ? { contactFirstName: firstName } : {}),
+          ...(lastName ? { contactLastName: lastName } : {}),
+        };
+      })(),
       contactEmail: contact.email.trim() || user?.email || "",
       contactPhone: contact.phone.trim(),
       locale,
@@ -444,7 +454,9 @@ export function Planner({
           (
             await sdk.orders.create({
               quoteId: state.quote.id,
-              contactName: plan.contact.name.trim(),
+              contactName: joinName(plan.contact.firstName, plan.contact.lastName),
+              contactFirstName: plan.contact.firstName.trim(),
+              contactLastName: plan.contact.lastName.trim(),
               contactEmail: (user?.email ?? plan.contact.email).trim(),
               contactPhone: plan.contact.phone.trim(),
               scheduledDate: slot.date,
@@ -1075,7 +1087,7 @@ function Confirmation({ booked, onRestart }: { booked: Booked; onRestart: () => 
   const { t, locale, formatDate } = useI18n();
   const { user } = useApi();
   const { serviceName } = usePlanner();
-  const first = (user?.fullName ?? "").split(/\s+/)[0];
+  const first = splitName(user?.fullName).first;
 
   return (
     <main id="planner-main" className="mx-auto flex w-full max-w-[760px] flex-col gap-6 px-4 py-10 md:px-6">

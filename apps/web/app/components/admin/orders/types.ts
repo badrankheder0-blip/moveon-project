@@ -82,6 +82,8 @@ export interface OrderDetail {
   serviceType: string;
   customerType: "private" | "business";
   contactName: string;
+  contactFirstName?: string | null;
+  contactLastName?: string | null;
   contactEmail: string;
   contactPhone: string;
   originAddress: string;

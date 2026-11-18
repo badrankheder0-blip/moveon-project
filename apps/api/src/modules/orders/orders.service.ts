@@ -22,6 +22,14 @@ import { assertTransition, type OrderStatus } from "./orders.state-machine.js";
 
 const { orders } = schema;
 
+import { nameParts } from "../../lib/names.js";
+
+/** The whole contact name and its two halves, from what the form sent. */
+function contactNameColumns(input: { contactName: string; contactFirstName?: string | undefined; contactLastName?: string | undefined }) {
+  const name = nameParts({ first: input.contactFirstName, last: input.contactLastName, full: input.contactName });
+  return { contactName: name.full, contactFirstName: name.first, contactLastName: name.last };
+}
+
 /**
  * Order booking and lifecycle.
  *
@@ -38,6 +46,8 @@ const { orders } = schema;
 export interface CreateOrderInput {
   quoteId: string;
   contactName: string;
+  contactFirstName?: string | undefined;
+  contactLastName?: string | undefined;
   contactEmail: string;
   contactPhone: string;
   scheduledDate: string;
@@ -104,7 +114,7 @@ export async function createOrder(
         serviceType: quote.serviceType,
         customerType: quote.customerType,
 
-        contactName: input.contactName.trim(),
+        ...contactNameColumns(input),
         contactEmail: input.contactEmail.trim().toLowerCase(),
         contactPhone: input.contactPhone.trim(),
 

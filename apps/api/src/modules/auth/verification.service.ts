@@ -9,6 +9,7 @@ import { and, eq, gt, isNull, lt, sql } from "drizzle-orm";
 import { AppError } from "../../lib/errors.js";
 import { logger } from "../../lib/logger.js";
 import { mailer } from "../../lib/mailer.js";
+import { greetingName } from "../../lib/names.js";
 
 const { users, verificationTokens, refreshTokens } = schema;
 
@@ -96,7 +97,7 @@ export async function requestLoginOtp(emailInput: string): Promise<OtpChallenge>
     payload: {
       code,
       expiresInMinutes: OTP_TTL_MINUTES,
-      ...(user.fullName ? { name: user.fullName } : {}),
+      ...(greetingName(user.firstName, user.fullName) ? { name: greetingName(user.firstName, user.fullName) } : {}),
     },
   });
 
@@ -199,7 +200,7 @@ export async function requestPasswordReset(emailInput: string): Promise<void> {
       // out until a customer clicks one.
       url: `${env.WEB_ORIGIN}/${user.locale}/passwort-zuruecksetzen?token=${encodeURIComponent(token)}`,
       expiresInMinutes: PASSWORD_RESET_TTL_MINUTES,
-      ...(user.fullName ? { name: user.fullName } : {}),
+      ...(greetingName(user.firstName, user.fullName) ? { name: greetingName(user.firstName, user.fullName) } : {}),
     },
   });
 }
@@ -250,7 +251,7 @@ export async function sendEmailVerification(userId: string): Promise<void> {
     payload: {
       url: `${env.WEB_ORIGIN}/${user.locale}/email-bestaetigen?token=${encodeURIComponent(token)}`,
       expiresInHours: EMAIL_VERIFICATION_TTL_HOURS,
-      ...(user.fullName ? { name: user.fullName } : {}),
+      ...(greetingName(user.firstName, user.fullName) ? { name: greetingName(user.firstName, user.fullName) } : {}),
     },
   });
 }
@@ -371,6 +372,7 @@ async function findActiveUser(email: string) {
       id: users.id,
       email: users.email,
       fullName: users.fullName,
+      firstName: users.firstName,
       locale: users.locale,
       status: users.status,
     })

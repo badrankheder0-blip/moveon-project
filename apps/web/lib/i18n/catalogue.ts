@@ -2168,13 +2168,29 @@ export const MESSAGES = {
     ar: "سجّل الدخول هنا", tr: "Buradan giriş yapın",
   },
 
-  "calc.confirm.fullName": {
-    de: "Vollständiger Name", en: "Full Name",
-    ar: "الاسم الكامل", tr: "Ad Soyad",
+  "calc.confirm.firstName": {
+    de: "Vorname",
+    en: "First name",
+    ar: "الاسم الأول",
+    tr: "Ad",
   },
-  "calc.confirm.fullNamePlaceholder": {
-    de: "z. B. Max Mustermann", en: "e.g. John Doe",
-    ar: "مثال: أحمد محمد", tr: "örn. Ahmet Yılmaz",
+  "calc.confirm.firstNamePlaceholder": {
+    de: "z. B. Max",
+    en: "e.g. John",
+    ar: "مثال: أحمد",
+    tr: "örn. Ahmet",
+  },
+  "calc.confirm.lastName": {
+    de: "Nachname",
+    en: "Last name",
+    ar: "الكنية",
+    tr: "Soyad",
+  },
+  "calc.confirm.lastNamePlaceholder": {
+    de: "z. B. Mustermann",
+    en: "e.g. Doe",
+    ar: "مثال: محمد",
+    tr: "örn. Yılmaz",
   },
   "calc.confirm.phone": {
     de: "Telefonnummer", en: "Phone Number",
@@ -5753,11 +5769,17 @@ export const MESSAGES = {
     ar: "سنتواصل معك خلال 48 ساعة.",
     tr: "48 saat içinde sizinle iletişime geçeceğiz.",
   },
-  "plan.contact.name": {
-    de: "Vor- und Nachname",
-    en: "First and last name",
-    ar: "الاسم الكامل",
-    tr: "Ad ve soyad",
+  "plan.contact.firstName": {
+    de: "Vorname",
+    en: "First name",
+    ar: "الاسم الأول",
+    tr: "Ad",
+  },
+  "plan.contact.lastName": {
+    de: "Nachname",
+    en: "Last name",
+    ar: "الكنية",
+    tr: "Soyad",
   },
   "plan.contact.email": {
     de: "E-Mail-Adresse",
@@ -6689,11 +6711,17 @@ export const MESSAGES = {
     ar: "يجب أن يأتي تنظيف المغادرة بعد النقل.",
     tr: "Mevcut adresinizdeki çıkış temizliği taşınmadan sonra olmalıdır.",
   },
-  "plan.error.fullName": {
-    de: "Gib Vor- und Nachnamen ein.",
-    en: "Enter first and last name.",
-    ar: "أدخل الاسم الأول واسم العائلة.",
-    tr: "Ad ve soyadı girin.",
+  "plan.error.firstName": {
+    de: "Gib deinen Vornamen ein.",
+    en: "Enter your first name.",
+    ar: "أدخل الاسم الأول.",
+    tr: "Adınızı girin.",
+  },
+  "plan.error.lastName": {
+    de: "Gib deinen Nachnamen ein.",
+    en: "Enter your last name.",
+    ar: "أدخل الكنية.",
+    tr: "Soyadınızı girin.",
   },
   "plan.error.email": {
     de: "Gib eine gültige E-Mail-Adresse ein.",

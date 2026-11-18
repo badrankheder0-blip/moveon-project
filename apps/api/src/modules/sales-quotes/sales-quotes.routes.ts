@@ -25,6 +25,7 @@ import {
   quoteTotals,
   type SalesQuoteRow,
 } from "./sales-quotes.service.js";
+import { greetingName, joinName, nameParts } from "../../lib/names.js";
 
 const { leads, orders, salesQuotes } = schema;
 
@@ -144,6 +145,9 @@ const quoteLine = z.object({
 
 const fields = {
   customerName: z.string().trim().max(160).optional(),
+  /** The halves of `customerName`; when sent, the whole name is made from them. */
+  customerFirstName: z.string().trim().max(80).optional(),
+  customerLastName: z.string().trim().max(80).optional(),
   customerEmail: text(254),
   customerPhone: text(40),
   company: text(160),
@@ -198,6 +202,12 @@ salesQuotesRouter.post(
         // The business form asks for a company and no person; the lead's name
         // is then the company itself, which the quote keeps as the company.
         customerName: lead.company && lead.name === lead.company ? "" : lead.name,
+        ...(lead.company && lead.name === lead.company
+          ? {}
+          : (() => {
+              const name = nameParts({ first: lead.firstName, last: lead.lastName, full: lead.name });
+              return { customerFirstName: name.first, customerLastName: name.last };
+            })()),
         customerEmail: lead.email,
         customerPhone: lead.phone,
         company: lead.company,
@@ -263,6 +273,9 @@ function definedFields(body: Partial<Record<keyof typeof fields, unknown>>) {
     if (key === "vatRate") patch.vatRate = (value as number).toFixed(2);
     else if (key === "customerName") patch.customerName = (value as string) ?? "";
     else (patch as Record<string, unknown>)[key] = value;
+  }
+  if (body.customerFirstName !== undefined || body.customerLastName !== undefined) {
+    patch.customerName = joinName(patch.customerFirstName, patch.customerLastName);
   }
   return patch;
 }
@@ -405,7 +418,7 @@ salesQuotesRouter.post(
       locale,
       payload: {
         number: quote.number,
-        name: quote.customerName.trim() || undefined,
+        name: greetingName(quote.customerFirstName, quote.customerName) || undefined,
         sender: company.name,
         lines: quote.lines,
         netAmount: totals.net.toFixed(2),

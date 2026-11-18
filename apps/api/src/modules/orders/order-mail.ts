@@ -5,6 +5,7 @@ import type { OrderStage } from "@mon/mailer";
 import { logger } from "../../lib/logger.js";
 import { mailer } from "../../lib/mailer.js";
 import { sendTemplate } from "../messages/messages.service.js";
+import { greetingName } from "../../lib/names.js";
 
 /**
  * The customer-facing email for each point in an order's life.
@@ -30,6 +31,8 @@ export interface OrderMailSubject {
   reference: string;
   contactEmail: string;
   contactName: string;
+  /** The first half of `contactName`, which the mails greet by. */
+  contactFirstName?: string | null;
   /** Plain `text` in the database, so narrowed rather than trusted. */
   locale: string;
   scheduledDate: string | null;
@@ -100,7 +103,7 @@ export async function sendOrderStageMail(
       totalGross: order.totalGross,
       depositAmount: order.depositAmount,
       url: orderUrl(order, locale),
-      ...(order.contactName ? { name: order.contactName } : {}),
+      ...(greetingName(order.contactFirstName, order.contactName) ? { name: greetingName(order.contactFirstName, order.contactName) } : {}),
       ...(order.scheduledDate ? { scheduledDate: order.scheduledDate } : {}),
       ...(order.scheduledTime ? { scheduledTime: order.scheduledTime } : {}),
       // Only on a cancellation, and only when one was charged.
@@ -142,7 +145,7 @@ export async function sendQuoteMail(order: OrderMailSubject & { status: string }
       totalGross: order.totalGross,
       depositAmount: order.depositAmount,
       url: orderUrl(order, locale),
-      ...(order.contactName ? { name: order.contactName } : {}),
+      ...(greetingName(order.contactFirstName, order.contactName) ? { name: greetingName(order.contactFirstName, order.contactName) } : {}),
       ...(order.scheduledDate ? { scheduledDate: order.scheduledDate } : {}),
       ...(order.scheduledTime ? { scheduledTime: order.scheduledTime } : {}),
     },
@@ -174,7 +177,7 @@ export async function sendPaymentReceiptMail(
       paidAmount: order.paidAmount,
       totalGross: order.totalGross,
       url: orderUrl(order, locale),
-      ...(order.contactName ? { name: order.contactName } : {}),
+      ...(greetingName(order.contactFirstName, order.contactName) ? { name: greetingName(order.contactFirstName, order.contactName) } : {}),
       ...(payment.method ? { method: payment.method } : {}),
     },
   });

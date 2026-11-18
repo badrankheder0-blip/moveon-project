@@ -48,6 +48,8 @@ const TEXT = defineText({
   hr: { de: "vor {n} Std.", en: "{n} h ago", ar: "قبل {n} ساعة", tr: "{n} sa önce" },
   f_company: { de: "Firma", en: "Company", ar: "الشركة", tr: "Şirket" },
   f_name: { de: "Name", en: "Name", ar: "الاسم", tr: "Ad" },
+  f_firstName: { de: "Vorname", en: "First name", ar: "الاسم الأول", tr: "Ad" },
+  f_lastName: { de: "Nachname", en: "Last name", ar: "الكنية", tr: "Soyad" },
   f_email: { de: "E-Mail", en: "Email", ar: "البريد الإلكتروني", tr: "E-posta" },
   f_phone: { de: "Telefon", en: "Phone", ar: "الهاتف", tr: "Telefon" },
   f_size: { de: "Arbeitsplätze", en: "Workstations", ar: "عدد المكاتب", tr: "Çalışma alanı" },
@@ -84,6 +86,9 @@ interface Lead {
   kind: Kind;
   status: Status;
   name: string;
+  /** The halves of `name` when the form asked for them (older messages: null). */
+  firstName?: string | null;
+  lastName?: string | null;
   email: string | null;
   phone: string | null;
   company: string | null;
@@ -400,7 +405,9 @@ function Detail({
 
   const facts: { k: string; v: string; href?: string }[] = [];
   if (lead.company) facts.push({ k: tx("f_company"), v: lead.company });
-  if (person) facts.push({ k: tx("f_name"), v: person });
+  if (person && (lead.firstName || lead.lastName)) {
+    facts.push({ k: tx("f_firstName"), v: lead.firstName || "—" }, { k: tx("f_lastName"), v: lead.lastName || "—" });
+  } else if (person) facts.push({ k: tx("f_name"), v: person });
   if (lead.email) facts.push({ k: tx("f_email"), v: lead.email, href: `mailto:${lead.email}` });
   if (lead.phone) facts.push({ k: tx("f_phone"), v: lead.phone, href: `tel:${lead.phone.replace(/\s+/g, "")}` });
   const known = FIELD_ORDER.filter((key) => data[key]);

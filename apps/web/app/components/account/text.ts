@@ -124,7 +124,7 @@ export const AC = defineText({
   fName: { de: "Vollständiger Name", en: "Full name", ar: "الاسم الكامل", tr: "Ad soyad" },
   fEmail: { de: "E-Mail", en: "Email", ar: "البريد الإلكتروني", tr: "E-posta" },
   fFirstName: { de: "Vorname", en: "First name", ar: "الاسم الأول", tr: "Ad" },
-  fLastName: { de: "Nachname", en: "Last name", ar: "اسم العائلة", tr: "Soyad" },
+  fLastName: { de: "Nachname", en: "Last name", ar: "الكنية", tr: "Soyad" },
   fEmailRepeat: { de: "E-Mail wiederholen", en: "Repeat email", ar: "أعد كتابة البريد الإلكتروني", tr: "E-postayı tekrarlayın" },
   errEmailMismatch: { de: "Die E-Mail-Adressen stimmen nicht überein.", en: "The email addresses don’t match.", ar: "البريدان الإلكترونيان غير متطابقين.", tr: "E-posta adresleri eşleşmiyor." },
   auTermsPre: { de: "Ich stimme den ", en: "I agree to the ", ar: "أوافق على ", tr: "" },
