@@ -172,6 +172,9 @@ export function Planner({
   // (/rechner?type=business&services=renovation): the start screen is
   // answered for the visitor and they land on "Wobei dürfen wir helfen?"
   // with that service chosen. The site's own ids are accepted as well.
+  // A link with the type only (/rechner?type=business, e.g. "Angebot
+  // anfordern" on Geschäftskunden) lands there with nothing chosen, so the
+  // visitor picks the services themselves.
   const deepLinked = useRef(false);
   useEffect(() => {
     if (!restored || deepLinked.current) return;
@@ -188,7 +191,7 @@ export function Planner({
       plan: {
         ...base,
         customerType: type,
-        services: wanted.length ? { ...INITIAL_PLAN.services, ...Object.fromEntries(wanted.map((key) => [key, true])) } : base.services,
+        services: { ...INITIAL_PLAN.services, ...Object.fromEntries(wanted.map((key) => [key, true])) },
       },
     });
     router.replace(`/${locale}/rechner?step=services`, { scroll: false });

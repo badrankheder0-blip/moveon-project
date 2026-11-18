@@ -816,7 +816,7 @@ export const PAGES_CONTENT: ContentSeed[] = [
   row("page-for-business", "hero.sub", "textarea", "Hero — text under the title", 5, { de: "Büros, Praxen, Geschäfte und Lager. Eine feste Ansprechperson, Rechnungen passend zu Ihrer Buchhaltung und Umzüge rund um Ihre Öffnungszeiten.", en: "Offices, practices, shops and warehouses. One contact person, invoices that fit your bookkeeping and moves planned around your opening hours.", ar: "مكاتب وعيادات ومحلات ومستودعات. مسؤول تواصل واحد، فواتير تناسب محاسبتك، ونقل مخطّط حسب ساعات عملك.", tr: "Ofisler, muayenehaneler, mağazalar ve depolar. Tek iletişim kişisi, muhasebenize uygun faturalar ve çalışma saatlerinize göre planlanan taşınmalar." }),
   row("page-for-business", "hero.img", "image", "Hero — photo", 6, same("/images/mon/photos/audience-business.webp")),
   row("page-for-business", "hero.btn", "text", "Hero — red button: text", 7, { de: "Angebot anfordern", en: "Request an offer", ar: "اطلب عرضاً", tr: "Teklif isteyin" }),
-  row("page-for-business", "hero.btnHref", "text", "Hero — red button: address", 8, same("/rechner?type=business&services=moving")),
+  row("page-for-business", "hero.btnHref", "text", "Hero — red button: address", 8, same("/rechner?type=business")),
   row("page-for-business", "hero.btn2", "text", "Hero — outlined button: text", 9, same("")),
   row("page-for-business", "hero.btn2Href", "text", "Hero — outlined button: address", 10, same("")),
   row("page-for-business", "cards.eyebrow", "text", "Why businesses choose us — small label", 11, { de: "WARUM UNTERNEHMEN UNS WÄHLEN", en: "WHY BUSINESSES CHOOSE US", ar: "لماذا تختارنا الشركات", tr: "İŞLETMELER NEDEN BİZİ SEÇİYOR" }),
