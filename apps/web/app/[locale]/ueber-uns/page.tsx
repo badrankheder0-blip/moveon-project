@@ -8,8 +8,9 @@ import { cardItems, heroOf } from "@/app/components/mon/blocks/ServicePage";
 
 /**
  * About m.on (the prototype's `#/about`): the hero, how we work beside a
- * photo, the homepage's numbers, four promises and the closing pair.
- * CMS section `page-about`.
+ * photo, the numbers, four promises and the closing pair. CMS section
+ * `page-about` — the numbers too (`stats.N.value` / `.label`); only while it
+ * has none does the page show the homepage's.
  */
 
 const SECTION = "page-about";
@@ -21,6 +22,7 @@ export async function generateMetadata({ params }: { params: { locale: Locale } 
 export default async function AboutPage({ params }: { params: { locale: Locale } }) {
   const page = await loadPage(params.locale, SECTION);
   const { c, items, img, lines } = page;
+  const ownStats = items("stats", ["value", "label"]);
 
   return (
     <>
@@ -33,7 +35,7 @@ export default async function AboutPage({ params }: { params: { locale: Locale }
         img={img("split.img") ?? ""}
         flip
       />
-      <Stats items={statsOf(page)} />
+      <Stats items={ownStats.length ? ownStats : statsOf(page)} />
       <Cards eyebrow={c("promises.eyebrow")} title={c("promises.title")} items={cardItems(page, "promises")} center />
       <ClosingCta cta={ctaOf(page)} question />
     </>

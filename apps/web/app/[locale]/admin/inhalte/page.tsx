@@ -42,13 +42,6 @@ import {
 
 const TEXT = defineText({
   title: { de: "Inhalte bearbeiten", en: "Content editing", ar: "تعديل المحتوى", tr: "İçerik düzenleme" },
-  statsNote: {
-    de: "Die Zahlen auf dieser Seite (z. B. 1,000+ Umzüge) gelten für Startseite und Über uns. Sie werden dort bearbeitet, hinzugefügt oder entfernt:",
-    en: "The figures on this page (e.g. 1,000+ moves) are shared with the homepage. Edit, add or remove them there:",
-    ar: "الأرقام في هذه الصفحة (مثل 1,000+ عملية نقل) مشتركة مع الصفحة الرئيسية. عدّلها أو أضف إليها أو احذف منها هناك:",
-    tr: "Bu sayfadaki rakamlar (ör. 1,000+ taşınma) ana sayfayla ortaktır. Onları orada düzenleyin, ekleyin veya kaldırın:",
-  },
-  statsLink: { de: "Startseite → Zahlen", en: "Homepage → Numbers", ar: "الصفحة الرئيسية ← الأرقام", tr: "Ana sayfa → Rakamlar" },
   sub: {
     de: "Wählen Sie eine Seite, um ihre Texte und Bilder zu bearbeiten. Änderungen gehen mit „Speichern & veröffentlichen“ auf der Website live.",
     en: "Choose a page to edit its texts and images. Changes go live on the website with Save & publish.",
@@ -279,14 +272,6 @@ function PageEditor({ c, section }: { c: Content; section: string }) {
           <div className="a-page-head" style={{ display: "block" }}>
             <h1 style={{ lineHeight: 1.2 }}>{pageName(section, locale)}</h1>
             <p style={{ maxWidth: 620 }}>{tx("shared")}</p>
-            {section === "page-about" ? (
-              <p style={{ maxWidth: 620, marginTop: 8 }}>
-                {tx("statsNote")}{" "}
-                <a href={`/${locale}${ADMIN_PATHS.home}`} style={{ color: "#d71635", fontWeight: 600 }}>
-                  {tx("statsLink")}
-                </a>
-              </p>
-            ) : null}
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
             <LangSwitch value={lang} onChange={setLang} />
