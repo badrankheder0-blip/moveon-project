@@ -158,6 +158,8 @@ interface ApiContextValue extends AuthState {
     email: string;
     password: string;
     fullName: string;
+    firstName?: string;
+    lastName?: string;
     phone?: string;
     locale?: string;
     quoteId?: string;

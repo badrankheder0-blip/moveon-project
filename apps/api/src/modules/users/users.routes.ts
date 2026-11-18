@@ -1,5 +1,6 @@
 import {
   ADMIN_PAGES,
+  checkMediaUpload,
   ROLES,
   canManageAccount,
   usesPagePermissions,
@@ -38,14 +39,9 @@ usersRouter.get(
   asyncHandler(async (req, res) => {
     const [user] = await db
       .select({
-        id: users.id,
-        email: users.email,
-        fullName: users.fullName,
-        phone: users.phone,
+        ...profileColumns,
         role: users.role,
-        locale: users.locale,
         createdAt: users.createdAt,
-        savedAddresses: users.savedAddresses,
       })
       .from(users)
       .where(eq(users.id, req.user!.id))
@@ -55,9 +51,65 @@ usersRouter.get(
       throw AppError.notFound("User");
     }
 
-    res.json({ ...user, savedAddresses: user.savedAddresses ?? [] });
+    res.json(presentProfile(user));
   }),
 );
+
+/** What the account's own profile reads and gets back after a save. */
+const profileColumns = {
+  id: users.id,
+  email: users.email,
+  fullName: users.fullName,
+  firstName: users.firstName,
+  lastName: users.lastName,
+  phone: users.phone,
+  locale: users.locale,
+  avatar: users.avatar,
+  profileAddress: users.profileAddress,
+  savedAddresses: users.savedAddresses,
+};
+
+/**
+ * The stored profile with its gaps filled: an account made before first and
+ * last name were kept apart has them split from `fullName` at the first space.
+ */
+function presentProfile<T extends { fullName: string; firstName: string | null; lastName: string | null; savedAddresses: unknown }>(row: T) {
+  const split = row.firstName === null && row.lastName === null;
+  const space = row.fullName.indexOf(" ");
+  return {
+    ...row,
+    firstName: split ? (space > 0 ? row.fullName.slice(0, space) : row.fullName) : (row.firstName ?? ""),
+    lastName: split ? (space > 0 ? row.fullName.slice(space + 1).trim() : "") : (row.lastName ?? ""),
+    savedAddresses: row.savedAddresses ?? [],
+  };
+}
+
+/** The largest profile photo kept: the browser sends a 256px JPEG of a few dozen KB. */
+const AVATAR_MAX_BYTES = 200 * 1024;
+
+/**
+ * A profile photo as a data URL, checked by its bytes rather than its label:
+ * JPEG, PNG or WebP, at most AVATAR_MAX_BYTES. Null removes the photo.
+ */
+const avatar = z
+  .string()
+  .max(Math.ceil((AVATAR_MAX_BYTES * 4) / 3) + 40)
+  .refine((value) => {
+    const match = /^data:image\/(jpeg|png|webp);base64,([A-Za-z0-9+/=]+)$/.exec(value);
+    if (!match) return false;
+    const bytes = Buffer.from(match[2]!, "base64");
+    if (bytes.length === 0 || bytes.length > AVATAR_MAX_BYTES) return false;
+    const checked = checkMediaUpload(bytes, "image");
+    return checked.ok && ["image/jpeg", "image/png", "image/webp"].includes(checked.format.contentType);
+  }, "The photo must be a JPEG, PNG or WebP image of at most 200 KB.")
+  .nullable();
+
+const profileAddress = z.object({
+  street: z.string().trim().max(160).default(""),
+  houseNumber: z.string().trim().max(20).default(""),
+  zip: z.string().trim().max(12).default(""),
+  city: z.string().trim().max(80).default(""),
+});
 
 /**
  * One entry of the account's address book. The whole list is replaced on
@@ -87,8 +139,12 @@ usersRouter.patch(
   validate({
     body: z.object({
       fullName: z.string().trim().min(2).max(120).optional(),
+      firstName: z.string().trim().min(1).max(60).optional(),
+      lastName: z.string().trim().min(1).max(60).optional(),
       phone: z.string().trim().min(5).max(40).nullable().optional(),
       locale: z.enum(["de", "en", "ar", "tr"]).optional(),
+      avatar: avatar.optional(),
+      profileAddress: profileAddress.nullable().optional(),
       savedAddresses: z
         .array(savedAddress)
         .max(10)
@@ -99,7 +155,11 @@ usersRouter.patch(
   asyncHandler(async (req, res) => {
     const body = req.body as {
       fullName?: string;
+      firstName?: string;
+      lastName?: string;
       phone?: string | null;
+      avatar?: string | null;
+      profileAddress?: z.infer<typeof profileAddress> | null;
       locale?: "de" | "en" | "ar" | "tr";
       savedAddresses?: z.infer<typeof savedAddress>[];
     };
@@ -110,20 +170,24 @@ usersRouter.patch(
       isDefault: list.some((other) => other.isDefault) ? entry.id === list.find((other) => other.isDefault)!.id : index === 0,
     }));
 
+    // First and last name travel together and make the name shown everywhere else.
+    if ((body.firstName === undefined) !== (body.lastName === undefined)) {
+      throw AppError.unprocessable("Send the first and the last name together.");
+    }
+    const names =
+      body.firstName !== undefined && body.lastName !== undefined
+        ? { firstName: body.firstName, lastName: body.lastName, fullName: `${body.firstName} ${body.lastName}` }
+        : {};
+
     const [updated] = await db
       .update(users)
-      .set({ ...body, ...(savedAddresses ? { savedAddresses } : {}), updatedAt: new Date() })
+      .set({ ...body, ...names, ...(savedAddresses ? { savedAddresses } : {}), updatedAt: new Date() })
       .where(eq(users.id, req.user!.id))
-      .returning({
-        id: users.id,
-        email: users.email,
-        fullName: users.fullName,
-        phone: users.phone,
-        locale: users.locale,
-        savedAddresses: users.savedAddresses,
-      });
+      .returning(profileColumns);
 
-    res.json({ ...updated, savedAddresses: updated?.savedAddresses ?? [] });
+    if (!updated) throw AppError.notFound("User");
+
+    res.json(presentProfile(updated));
   }),
 );
 

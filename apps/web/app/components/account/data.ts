@@ -93,10 +93,22 @@ export interface Profile {
   id: string;
   email: string;
   fullName: string;
+  firstName: string;
+  lastName: string;
   phone: string | null;
   locale: string;
+  /** A small JPEG data URL, or null without a photo. */
+  avatar: string | null;
+  profileAddress: ProfileAddress | null;
   createdAt: string;
   savedAddresses?: SavedAddress[] | null;
+}
+
+export interface ProfileAddress {
+  street: string;
+  houseNumber: string;
+  zip: string;
+  city: string;
 }
 
 export interface SavedAddress {

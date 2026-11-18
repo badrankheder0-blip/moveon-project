@@ -44,6 +44,8 @@ export interface RegisterInput {
   email: string;
   password: string;
   fullName: string;
+  firstName?: string | undefined;
+  lastName?: string | undefined;
   phone?: string | undefined;
   locale?: string | undefined;
 }
@@ -68,6 +70,8 @@ export async function register(
       email,
       passwordHash,
       fullName: input.fullName.trim(),
+      firstName: input.firstName?.trim() || null,
+      lastName: input.lastName?.trim() || null,
       phone: input.phone?.trim() ?? null,
       locale: input.locale ?? "de",
       role: "customer",

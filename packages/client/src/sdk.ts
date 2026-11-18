@@ -125,6 +125,8 @@ export class MonSdk {
       email: string;
       password: string;
       fullName: string;
+      firstName?: string;
+      lastName?: string;
       phone?: string;
       locale?: string;
       /** Attaches a quote calculated before signup, so nothing is retyped. */

@@ -20,6 +20,9 @@ export const registerSchema = z.object({
   email,
   password,
   fullName: z.string().trim().min(2, "Please provide your name.").max(120),
+  /** The halves of `fullName` when the form asked for them apart. */
+  firstName: z.string().trim().min(1).max(60).optional(),
+  lastName: z.string().trim().min(1).max(60).optional(),
   phone: z.string().trim().min(5).max(40).optional(),
   locale: locale.optional(),
   /** Attaches a quote created before signup, so nothing is retyped. */

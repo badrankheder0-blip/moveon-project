@@ -329,6 +329,22 @@
 .mon-site .ac-pf .ac-fl input:focus { background: #ffffff; }
 .mon-site .ac-pf .ac-fl input[readonly] { background: #eceee9; }
 .mon-site .ac-pf .ac-fl input[readonly]:focus { border-color: #eceee9; box-shadow: none; }
+.mon-site .ac-ini.is-photo { object-fit: cover; background: #f4f5f2; }
+.mon-site .ac-pf-photo { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.mon-site .ac-pf-av { width: 88px; height: 88px; border-radius: 50%; flex: none; display: grid; place-items: center; overflow: hidden; background: #d71635; color: #ffffff; font-size: 28px; font-weight: 700; border: 3px solid #ffffff; box-shadow: 0 0 0 1px #e3e5de, 0 8px 20px #1d22201a; }
+.mon-site .ac-pf-av img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.mon-site .ac-pf-photo-t { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.mon-site .ac-pf-photo-t b { font-size: 14px; }
+.mon-site .ac-pf-photo-t small { font-size: 12.5px; color: #737870; }
+.mon-site .ac-pf-photo-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.mon-site .ac-pf-ghost { min-height: 40px; padding: 0 16px; border-radius: 10px; border: 1.5px solid #e3e5de; background: #ffffff; color: #1d2220; font-size: 13.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; }
+.mon-site .ac-pf-ghost:hover { border-color: #d71635; color: #b7122b; }
+.mon-site .ac-pf-ghost.is-red { background: #d71635; border-color: #d71635; color: #ffffff; }
+.mon-site .ac-pf-ghost.is-red:hover { background: #b7122b; color: #ffffff; }
+.mon-site .ac-pf-ghost:disabled { opacity: .6; cursor: progress; }
+.mon-site .ac-pf-sub { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; padding-top: 18px; border-top: 1px solid #eef0ea; }
+.mon-site .ac-pf-sub b { font-size: 15px; }
+.mon-site .ac-pf-sub small { font-size: 13px; color: #737870; }
 .mon-site .ac-pf-btn { min-height: 48px; padding: 0 22px; border: 0; border-radius: 12px; background: #d71635; color: #ffffff; font-size: 14px; font-weight: 700; }
 .mon-site .ac-pf-btn:disabled { opacity: .7; cursor: progress; }
 

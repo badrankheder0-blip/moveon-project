@@ -77,6 +77,8 @@ export default function SignupPage() {
     try {
       await signUp({
         fullName: name,
+        firstName: first,
+        lastName: last,
         email,
         password: form.pass,
         locale,

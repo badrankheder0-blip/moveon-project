@@ -17,6 +17,14 @@ import { userRoleEnum, userStatusEnum } from "./enums.js";
  * An address a customer keeps in their account ("Home", "New flat"), as the
  * website prototype's address book stores them. Validated by the API.
  */
+/** The customer's own address on their profile: four fields, all optional. */
+export interface ProfileAddress {
+  street: string;
+  houseNumber: string;
+  zip: string;
+  city: string;
+}
+
 export interface SavedAddress {
   id: string;
   label: string;
@@ -46,7 +54,16 @@ export const users = pgTable(
     passwordHash: text("password_hash").notNull(),
 
     fullName: text("full_name").notNull(),
+    // The two halves of `fullName`, kept apart as the profile edits them.
+    // Null on accounts made before they existed; the profile then splits
+    // `fullName` once. `fullName` stays the name everything else shows.
+    firstName: text("first_name"),
+    lastName: text("last_name"),
     phone: text("phone"),
+    // The profile photo, as a small JPEG data URL the browser has already
+    // squared and shrunk (the API checks the bytes and the size).
+    avatar: text("avatar"),
+    profileAddress: jsonb("profile_address").$type<ProfileAddress>(),
 
     role: userRoleEnum("role").notNull().default("customer"),
     status: userStatusEnum("status").notNull().default("active"),

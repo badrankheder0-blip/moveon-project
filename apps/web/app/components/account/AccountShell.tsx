@@ -7,7 +7,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import { useApi } from "@/lib/api";
 import { useI18n } from "@/lib/i18n/provider";
 
-import { useMyNotifications, useMyOrders } from "./data";
+import { useMyNotifications, useMyOrders, useProfile } from "./data";
 import { Icon } from "./Icon";
 import { IC, initials, tabOf } from "./model";
 import { AC, type AcKey } from "./text";
@@ -54,11 +54,11 @@ export function useAccountText() {
 
 const NAV: { key: string; path: string; label: AcKey; icon: string }[] = [
   { key: "overview", path: "", label: "overview", icon: IC.home },
+  { key: "profile", path: "/profil", label: "profile", icon: IC.users },
   { key: "orders", path: "/auftraege", label: "myOrders", icon: IC.truck },
   { key: "notifications", path: "/benachrichtigungen", label: "notifs", icon: IC.bell },
   { key: "invoices", path: "/rechnungen", label: "invoices", icon: IC.doc },
   { key: "addresses", path: "/adressen", label: "addresses", icon: IC.pin },
-  { key: "profile", path: "/profil", label: "profile", icon: IC.users },
 ];
 
 export function AccountShell({ children }: { children: ReactNode }) {
@@ -104,6 +104,7 @@ export function AccountShell({ children }: { children: ReactNode }) {
     if (isStaff) router.replace(`/${locale}/admin`);
   }, [loading, leaving, user, isStaff, router, locale, pathname]);
 
+  const profile = useProfile();
   const orders = useMyOrders();
   const notifications = useMyNotifications();
   const upcoming = useMemo(() => (orders.data?.items ?? []).filter((order) => tabOf(order) === "up").length, [orders.data]);
@@ -131,7 +132,13 @@ export function AccountShell({ children }: { children: ReactNode }) {
       <section className="ac" data-screen-label="My account">
         <aside className="ac-aside">
           <div className="ac-who">
-            <span className="ac-ini">{initials(name)}</span>
+            {profile.data?.avatar ? (
+              // A data URL the profile saved; next/image has nothing to optimise here.
+              // eslint-disable-next-line @next/next/no-img-element
+              <img className="ac-ini is-photo" src={profile.data.avatar} alt="" />
+            ) : (
+              <span className="ac-ini">{initials(name)}</span>
+            )}
             <span className="ac-who-t">
               <b>{name}</b>
               <small>{user.email}</small>
