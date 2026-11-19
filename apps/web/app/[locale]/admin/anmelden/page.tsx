@@ -16,6 +16,10 @@ import { useSiteSettings } from "@/lib/site/useSiteSettings";
  * 56px fields, Caps Lock warning, show/hide password, "Keep me signed in"
  * and "Forgot password?".
  *
+ * "Forgot password?" mails a reset link to the address typed above it, through
+ * the same endpoint as the website's /passwort-vergessen. The answer is the same
+ * whether or not the address has an account, so the note never confirms one.
+ *
  * Customers keep signing in on the website's /login; this is for the office.
  * "Keep me signed in" unticked ends the session when the browser closes
  * (lib/admin/session).
@@ -42,11 +46,18 @@ const TEXT = defineText({
   lgPass: { de: "Passwort", en: "Password", ar: "كلمة المرور", tr: "Şifre" },
   lgRemember: { de: "Angemeldet bleiben", en: "Keep me signed in", ar: "تذكّرني", tr: "Oturumum açık kalsın" },
   lgForgot: { de: "Passwort vergessen?", en: "Forgot password?", ar: "نسيت كلمة المرور؟", tr: "Şifremi unuttum?" },
-  lgForgotNote: {
-    de: "Bitten Sie den Inhaber des Kontos, Ihnen in der Benutzerverwaltung ein neues Passwort zu setzen.",
-    en: "Ask the account owner to set a new password for you in User management.",
-    ar: "اطلب من مالك الحساب تعيين كلمة مرور جديدة لك من إدارة المستخدمين.",
-    tr: "Hesap sahibinden Kullanıcı yönetiminde size yeni bir şifre belirlemesini isteyin.",
+  lgForgotAsk: {
+    de: "Geben Sie oben Ihre E-Mail-Adresse ein und klicken Sie dann erneut auf „Passwort vergessen?“.",
+    en: "Enter your email address above, then click “Forgot password?” again.",
+    ar: "أدخل بريدك الإلكتروني في الأعلى، ثم اضغط «نسيت كلمة المرور؟» مرة أخرى.",
+    tr: "Yukarıya e-posta adresinizi girin, ardından tekrar “Şifremi unuttum?” seçeneğine tıklayın.",
+  },
+  lgForgotSending: { de: "Link wird gesendet…", en: "Sending the link…", ar: "جارٍ إرسال الرابط…", tr: "Bağlantı gönderiliyor…" },
+  lgForgotSent: {
+    de: "Wenn zu dieser Adresse ein Konto besteht, ist ein Link zum Zurücksetzen unterwegs. Er ist 30 Minuten gültig. Bitte prüfen Sie auch den Spam-Ordner.",
+    en: "If this address has an account, a reset link is on its way. It is valid for 30 minutes. Please check your spam folder too.",
+    ar: "إذا كان لهذا البريد حساب، فرابط إعادة التعيين في الطريق إليك. الرابط صالح لمدة 30 دقيقة. تحقّق من مجلد الرسائل غير المرغوب فيها أيضاً.",
+    tr: "Bu adrese ait bir hesap varsa sıfırlama bağlantısı yolda. Bağlantı 30 dakika geçerlidir. Lütfen spam klasörünü de kontrol edin.",
   },
   lgBtn: { de: "Anmelden", en: "Sign in", ar: "تسجيل الدخول", tr: "Giriş yap" },
   lgBusy: { de: "Anmeldung läuft…", en: "Signing in…", ar: "جارٍ الدخول…", tr: "Giriş yapılıyor…" },
@@ -77,6 +88,8 @@ const TEXT = defineText({
   language: { de: "Sprache", en: "Language", ar: "اللغة", tr: "Dil" },
 });
 
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 const EYE_ON = "M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z";
 const EYE_OFF =
   "M3 3l18 18M10.6 5.1A10.4 10.4 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.1M6.6 6.6C3.9 8.3 2 12 2 12s3.6 7 10 7c1.9 0 3.6-.6 5-1.5M9.9 9.9a3 3 0 0 0 4.2 4.2";
@@ -97,7 +110,7 @@ const field: React.CSSProperties = {
 };
 
 export default function AdminSignInPage() {
-  const { signIn, signOut, user, loading, isStaff } = useApi();
+  const { sdk, signIn, signOut, user, loading, isStaff } = useApi();
   const { locale, setLocale } = useI18n();
   const site = useSiteSettings();
   const tx = useText(TEXT);
@@ -108,7 +121,8 @@ export default function AdminSignInPage() {
   const [show, setShow] = useState(false);
   const [caps, setCaps] = useState(false);
   const [remember, setRemember] = useState(true);
-  const [forgot, setForgot] = useState(false);
+  /** "ask": no usable address typed yet; "sending" / "sent": the reset email. */
+  const [forgot, setForgot] = useState<"" | "ask" | "sending" | "sent">("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [langOpen, setLangOpen] = useState(false);
@@ -126,6 +140,25 @@ export default function AdminSignInPage() {
     if (!loading && user && isStaff) router.replace(target());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, user, isStaff, router]);
+
+  async function requestReset() {
+    const address = email.trim();
+    if (!EMAIL.test(address)) {
+      setForgot("ask");
+      document.querySelector<HTMLInputElement>(".a-login-input[type=email]")?.focus();
+      return;
+    }
+    setForgot("sending");
+    setError("");
+    try {
+      await sdk.auth.requestPasswordReset({ email: address });
+      setForgot("sent");
+    } catch (caught) {
+      // An unknown address is a success by design: only a rate limit or an unreachable API lands here.
+      setForgot("");
+      setError(caught instanceof ApiError && caught.status === 429 ? tx("lgTooMany") : tx("lgFailed"));
+    }
+  }
 
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -223,6 +256,7 @@ export default function AdminSignInPage() {
                 onChange={(event) => {
                   setEmail(event.target.value);
                   setError("");
+                  setForgot("");
                 }}
                 style={field}
               />
@@ -274,12 +308,16 @@ export default function AdminSignInPage() {
               </span>
               {tx("lgRemember")}
             </button>
-            <button type="button" onClick={() => setForgot((value) => !value)} style={{ padding: "4px 0", border: 0, background: "transparent", color: "#d71635", fontSize: 13, fontWeight: 600 }}>
+            <button type="button" disabled={forgot === "sending"} onClick={() => void requestReset()} style={{ padding: "4px 0", border: 0, background: "transparent", color: "#d71635", fontSize: 13, fontWeight: 600 }}>
               {tx("lgForgot")}
             </button>
           </div>
 
-          {forgot ? <p style={{ padding: "12px 14px", borderRadius: 10, background: "#f5f6f2", color: "#4a514d", fontSize: 12.5, lineHeight: 1.5 }}>{tx("lgForgotNote")}</p> : null}
+          {forgot ? (
+            <p role="status" style={{ padding: "12px 14px", borderRadius: 10, background: forgot === "sent" ? "#eef8f1" : "#f5f6f2", color: forgot === "sent" ? "#1f6b3a" : "#4a514d", fontSize: 12.5, lineHeight: 1.5 }}>
+              {tx(forgot === "ask" ? "lgForgotAsk" : forgot === "sending" ? "lgForgotSending" : "lgForgotSent")}
+            </p>
+          ) : null}
 
           {error ? (
             <p role="alert" style={{ display: "flex", alignItems: "center", gap: 9, padding: "11px 14px", border: "1px solid #f3c7cd", borderRadius: 10, background: "#fff6f6", color: "#b7122b", fontSize: 13, fontWeight: 600 }}>
