@@ -5,3 +5,8 @@
 @media (max-width: 899px) {
   .head { display: none; }
 }
+
+/* A name opens the customer's account. */
+.who:not(:disabled):hover .name,
+.who:focus-visible .name { color: #d71635; text-decoration: underline; text-underline-offset: 3px; }
+.who:focus-visible { outline: 2px solid #d71635; outline-offset: 4px; border-radius: 8px; }

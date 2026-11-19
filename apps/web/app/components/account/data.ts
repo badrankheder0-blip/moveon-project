@@ -100,6 +100,11 @@ export interface Profile {
   /** A small JPEG data URL, or null without a photo. */
   avatar: string | null;
   profileAddress: ProfileAddress | null;
+  customerType: "private" | "business";
+  /** Only on a company account. */
+  companyName: string | null;
+  /** Steuernummer or USt-IdNr., only on a company account. */
+  taxNumber: string | null;
   createdAt: string;
   savedAddresses?: SavedAddress[] | null;
 }

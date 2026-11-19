@@ -61,6 +61,9 @@ interface PersonalForm {
   houseNumber: string;
   zip: string;
   city: string;
+  type: "private" | "business";
+  company: string;
+  taxNo: string;
 }
 
 function formOf(profile: Profile, locale: string): PersonalForm {
@@ -74,6 +77,9 @@ function formOf(profile: Profile, locale: string): PersonalForm {
     houseNumber: address?.houseNumber ?? "",
     zip: address?.zip ?? "",
     city: address?.city ?? "",
+    type: profile.customerType ?? "private",
+    company: profile.companyName ?? "",
+    taxNo: profile.taxNumber ?? "",
   };
 }
 
@@ -145,6 +151,10 @@ export default function AccountProfilePage() {
     const filled = Object.values(address).filter(Boolean).length;
     if (!first || !last) return setPfErr(tx("errFill"));
     if (filled > 0 && filled < 4) return setPfErr(tx("pfAddrErr"));
+    const business = pf.type === "business";
+    const company = pf.company.trim();
+    const taxNo = pf.taxNo.trim();
+    if (business && (!company || !taxNo)) return setPfErr(tx("pfCompanyErr"));
     setPfBusy(true);
     setPfErr("");
     try {
@@ -153,6 +163,8 @@ export default function AccountProfilePage() {
         lastName: last,
         phone: phone ? phone : null,
         profileAddress: filled ? address : null,
+        customerType: pf.type,
+        ...(business ? { companyName: company, taxNumber: taxNo } : {}),
         ...(isLocale(pf.lang) ? { locale: pf.lang } : {}),
       });
       keep(updated);
@@ -163,15 +175,19 @@ export default function AccountProfilePage() {
         setLocale(pf.lang);
         return;
       }
-      setPf({ first, last, phone, lang: pf.lang, ...address });
+      setPf({ first, last, phone, lang: pf.lang, ...address, type: pf.type, company: business ? company : "", taxNo: business ? taxNo : "" });
       say(tx("pfSaved"));
     } catch (caught) {
       setPfErr(
         caught instanceof ApiError && caught.code === "VALIDATION_FAILED"
           ? caught.fieldIssues.some((issue) => issue.path.includes("phone"))
             ? `${tx("fPhone")}: ${caught.fieldIssues[0]?.message ?? ""}`
-            : tx("errFill")
-          : tx("errGeneric"),
+            : caught.fieldIssues.some((issue) => issue.path.includes("taxNumber"))
+              ? tx("pfTaxErr")
+              : tx("errFill")
+          : caught instanceof ApiError && caught.status === 422
+            ? tx("pfCompanyErr")
+            : tx("errGeneric"),
       );
     } finally {
       setPfBusy(false);
@@ -261,6 +277,28 @@ export default function AccountProfilePage() {
             }}
           />
         </div>
+        <div className="ac-fl is-wide">
+          <span id="pf-type">{tx("pfType")}</span>
+          <div className="ac-seg" role="group" aria-labelledby="pf-type" style={{ alignSelf: "flex-start" }}>
+            {(["private", "business"] as const).map((type) => (
+              <button key={type} type="button" aria-pressed={pf.type === type} onClick={() => setPf({ ...pf, type })}>
+                {tx(type === "private" ? "pfPrivate" : "pfBusiness")}
+              </button>
+            ))}
+          </div>
+        </div>
+        {pf.type === "business" ? (
+          <>
+            <label className="ac-fl">
+              {tx("pfCompany")}
+              <input dir="auto" autoComplete="organization" value={pf.company} onChange={(event) => setPf({ ...pf, company: event.target.value })} />
+            </label>
+            <label className="ac-fl">
+              {tx("pfTaxNo")}
+              <input dir="ltr" autoComplete="off" placeholder="12/345/67890 · DE123456789" value={pf.taxNo} onChange={(event) => setPf({ ...pf, taxNo: event.target.value })} />
+            </label>
+          </>
+        ) : null}
         <label className="ac-fl">
           {tx("fFirstName")}
           <input dir="auto" autoComplete="given-name" value={pf.first} onChange={(event) => setPf({ ...pf, first: event.target.value })} />

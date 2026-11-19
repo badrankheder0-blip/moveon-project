@@ -11,7 +11,7 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
-import { userRoleEnum, userStatusEnum } from "./enums.js";
+import { customerTypeEnum, userRoleEnum, userStatusEnum } from "./enums.js";
 
 /**
  * An address a customer keeps in their account ("Home", "New flat"), as the
@@ -64,6 +64,12 @@ export const users = pgTable(
     // squared and shrunk (the API checks the bytes and the size).
     avatar: text("avatar"),
     profileAddress: jsonb("profile_address").$type<ProfileAddress>(),
+    // Private person or company, as the profile sets it. A company keeps its
+    // name and tax number (Steuernummer or USt-IdNr.) here; a private account
+    // has both null.
+    customerType: customerTypeEnum("customer_type").notNull().default("private"),
+    companyName: text("company_name"),
+    taxNumber: text("tax_number"),
 
     role: userRoleEnum("role").notNull().default("customer"),
     status: userStatusEnum("status").notNull().default("active"),

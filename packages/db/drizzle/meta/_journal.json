@@ -141,6 +141,13 @@
       "when": 1794999945082,
       "tag": "0019_split_names",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1795080795216,
+      "tag": "0020_profile_company",
+      "breakpoints": true
     }
   ]
 }

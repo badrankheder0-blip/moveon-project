@@ -26,6 +26,7 @@ import { requirePermission } from "../../middleware/require-permission.js";
 import { validate, validatedParams, validatedQuery } from "../../middleware/validate.js";
 import { recordAudit } from "../audit/audit.service.js";
 import { revokeAllSessions } from "../auth/auth.service.js";
+import { companyNameSchema, profileAddressSchema, taxNumberSchema } from "./profile-fields.js";
 
 const { users } = schema;
 
@@ -66,6 +67,9 @@ const profileColumns = {
   locale: users.locale,
   avatar: users.avatar,
   profileAddress: users.profileAddress,
+  customerType: users.customerType,
+  companyName: users.companyName,
+  taxNumber: users.taxNumber,
   savedAddresses: users.savedAddresses,
 };
 
@@ -104,12 +108,8 @@ const avatar = z
   }, "The photo must be a JPEG, PNG or WebP image of at most 200 KB.")
   .nullable();
 
-const profileAddress = z.object({
-  street: z.string().trim().max(160).default(""),
-  houseNumber: z.string().trim().max(20).default(""),
-  zip: z.string().trim().max(12).default(""),
-  city: z.string().trim().max(80).default(""),
-});
+const profileAddress = profileAddressSchema;
+const taxNumber = taxNumberSchema;
 
 /**
  * One entry of the account's address book. The whole list is replaced on
@@ -145,6 +145,9 @@ usersRouter.patch(
       locale: z.enum(["de", "en", "ar", "tr"]).optional(),
       avatar: avatar.optional(),
       profileAddress: profileAddress.nullable().optional(),
+      customerType: z.enum(["private", "business"]).optional(),
+      companyName: companyNameSchema.nullable().optional(),
+      taxNumber: taxNumber.nullable().optional(),
       savedAddresses: z
         .array(savedAddress)
         .max(10)
@@ -160,6 +163,9 @@ usersRouter.patch(
       phone?: string | null;
       avatar?: string | null;
       profileAddress?: z.infer<typeof profileAddress> | null;
+      customerType?: "private" | "business";
+      companyName?: string | null;
+      taxNumber?: string | null;
       locale?: "de" | "en" | "ar" | "tr";
       savedAddresses?: z.infer<typeof savedAddress>[];
     };
@@ -179,9 +185,15 @@ usersRouter.patch(
         ? { firstName: body.firstName, lastName: body.lastName, fullName: `${body.firstName} ${body.lastName}` }
         : {};
 
+    // A company is saved with its name and tax number; a private account keeps neither.
+    if (body.customerType === "business" && (!body.companyName || !body.taxNumber)) {
+      throw AppError.unprocessable("A company account needs its name and tax number.");
+    }
+    const company = body.customerType === "private" ? { companyName: null, taxNumber: null } : {};
+
     const [updated] = await db
       .update(users)
-      .set({ ...body, ...names, ...(savedAddresses ? { savedAddresses } : {}), updatedAt: new Date() })
+      .set({ ...body, ...names, ...company, ...(savedAddresses ? { savedAddresses } : {}), updatedAt: new Date() })
       .where(eq(users.id, req.user!.id))
       .returning(profileColumns);
 
