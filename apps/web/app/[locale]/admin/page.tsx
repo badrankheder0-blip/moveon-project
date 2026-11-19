@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { AdminShell } from "@/app/components/admin/AdminShell";
 import {
@@ -123,6 +123,11 @@ export default function OverviewPage() {
   const [period, setPeriod] = useState<Period>("30d");
   const [metric, setMetric] = useState<"rev" | "cnt">("rev");
   const [hover, setHover] = useState<number | null>(null);
+  // Today's date and the greeting follow the browser's clock and time zone.
+  // The server renders in UTC, so both wait for the browser: rendered on the
+  // server they disagreed with it (React #418/#425 for anyone east of UTC).
+  const [now, setNow] = useState<Date | null>(null);
+  useEffect(() => setNow(new Date()), []);
 
   const rtl = LOCALE_META[locale].dir === "rtl";
   const loc = dateTag(locale);
@@ -311,8 +316,7 @@ export default function OverviewPage() {
     return tx("ago_d", { n: Math.round(minutes / 1440) });
   };
 
-  const now = new Date();
-  const hour = now.getHours();
+  const hour = now?.getHours() ?? 12;
   const newCount = counts.data?.newOrders ?? 0;
   const requests = data.data?.dateRequests;
   const attention = [
@@ -328,10 +332,10 @@ export default function OverviewPage() {
           <div style={{ minWidth: 0 }}>
             <span className="a-eyebrow" style={{ textTransform: "none" }}>
               <i />
-              {now.toLocaleDateString(loc, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+              {now ? now.toLocaleDateString(loc, { weekday: "long", day: "numeric", month: "long", year: "numeric" }) : "\u00a0"}
             </span>
             <h1 style={{ fontSize: "clamp(32px, 4vw, 46px)", fontWeight: 600, letterSpacing: rtl ? 0 : "-2px", lineHeight: 1.1, marginTop: 12 }}>
-              {hour < 12 ? tx("gm") : hour < 18 ? tx("ga") : tx("ge")}
+              {now ? (hour < 12 ? tx("gm") : hour < 18 ? tx("ga") : tx("ge")) : "\u00a0"}
               <span style={{ display: "block", color: "#a3a69e" }}>{tx("ovSub")}</span>
             </h1>
           </div>

@@ -152,6 +152,21 @@ export async function refresh(token: string, context: SessionContext): Promise<A
     throw AppError.unauthenticated("Refresh token is not recognised.");
   }
 
+  // Two requests from one page can race to refresh with the same cookie (a
+  // reload, or React rebuilding the page after a hydration mismatch). The
+  // first rotates the token; the second then presents the one just replaced.
+  // That is an overlap, not a theft: within a few seconds of a *rotation*
+  // (a successor exists), from the same browser, it gets a session of its own
+  // instead of every session being revoked. Anything else still is reuse.
+  if (stored.revokedAt !== null && (await isRotationOverlap(stored, context))) {
+    const [user] = await db.select().from(users).where(eq(users.id, stored.userId)).limit(1);
+    if (!user || user.status === "blocked" || stored.expiresAt.getTime() <= Date.now()) {
+      throw AppError.unauthenticated("Session has expired. Please sign in again.");
+    }
+    logger.info({ userId: stored.userId, tokenId: stored.id }, "Concurrent refresh within the rotation grace period");
+    return issueSession(user, context, { rotatedFromId: stored.id });
+  }
+
   if (stored.revokedAt !== null) {
     logger.error(
       { userId: stored.userId, tokenId: stored.id },
@@ -181,6 +196,33 @@ export async function refresh(token: string, context: SessionContext): Promise<A
 
     return issueSession(user, context, { rotatedFromId: stored.id, tx });
   });
+}
+
+/** How long after a rotation the replaced token is still taken as an overlap. */
+const ROTATION_GRACE_MS = 30_000;
+
+async function isRotationOverlap(
+  stored: typeof refreshTokens.$inferSelect,
+  context: SessionContext,
+): Promise<boolean> {
+  if (!stored.revokedAt || Date.now() - stored.revokedAt.getTime() > ROTATION_GRACE_MS) return false;
+  if ((stored.userAgent ?? "") !== (context.userAgent ?? "")) return false;
+  const [successor] = await db
+    .select({ id: refreshTokens.id, revokedAt: refreshTokens.revokedAt })
+    .from(refreshTokens)
+    .where(eq(refreshTokens.rotatedFromId, stored.id))
+    .limit(1);
+  if (!successor) return false;
+  if (successor.revokedAt === null) return true;
+  // Revoked, but only fine if that too was a rotation. A successor revoked with
+  // no successor of its own was ended on purpose (sign-out, password change,
+  // blocked account), and must not be reopened by the grace period.
+  const [next] = await db
+    .select({ id: refreshTokens.id })
+    .from(refreshTokens)
+    .where(eq(refreshTokens.rotatedFromId, successor.id))
+    .limit(1);
+  return Boolean(next);
 }
 
 /** Signs out a single device by revoking the presented refresh token. */

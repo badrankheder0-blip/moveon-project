@@ -235,7 +235,13 @@ export function ApiProvider({ children }: { children: ReactNode }) {
       applyUser(user);
     } catch (error) {
       // An expired or absent session is the normal anonymous case, not a bug.
+      // The hint cookie may still be valid while the session behind it is not
+      // (ended elsewhere, or by a password reset). Left in place, the edge
+      // keeps sending the browser from the sign-in page back to the dashboard,
+      // which finds no session and sends it to the sign-in page again: a loop
+      // with an empty menu. The API has the last word, so the hint goes.
       if (error instanceof ApiError && error.isAuthFailure) {
+        dropSessionHint();
         applyUser(null);
         return;
       }
