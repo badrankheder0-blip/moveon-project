@@ -244,7 +244,8 @@ export const PAGE_CAPABILITIES: Record<AdminPage, readonly Permission[]> = {
   // Accepting a quote turns it into an order.
   quotes: ["quotes.read", "orders.write"],
   inbox: ["messages.read", "messages.write"],
-  calendar: ["orders.read"],
+  // The calendar is where days are blocked and given their own limit.
+  calendar: ["orders.read", "availability.write"],
   map: ["orders.assign", "orders.read"],
   staff: ["orders.assign"],
   customers: ["customers.read"],

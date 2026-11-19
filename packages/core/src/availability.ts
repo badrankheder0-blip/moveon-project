@@ -45,6 +45,13 @@ export interface AvailabilitySnapshot {
   bookedCapacity: ReadonlyMap<CalendarDate, number>;
   /** Days closed manually or for a public holiday. */
   blockedDays: ReadonlyMap<CalendarDate, { reason: string; isPublicHoliday: boolean }>;
+  /** Day → its own limit, set in the admin calendar, in place of `maxCapacityPerDay`. */
+  capacityOverrides?: ReadonlyMap<CalendarDate, number>;
+}
+
+/** The most a day takes: its own limit when the admin set one, else the default. */
+export function capacityFor(date: CalendarDate, rules: AvailabilityRules, snapshot: AvailabilitySnapshot): number {
+  return snapshot.capacityOverrides?.get(date) ?? rules.maxCapacityPerDay;
 }
 
 export interface DayAvailability {
@@ -97,7 +104,7 @@ export function classifyDay(
   }
 
   const used = snapshot.bookedCapacity.get(date) ?? 0;
-  const remaining = rules.maxCapacityPerDay - used;
+  const remaining = capacityFor(date, rules, snapshot) - used;
 
   if (remaining < requiredCapacity) {
     return none("full");

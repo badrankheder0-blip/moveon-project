@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import {
   boolean,
+  check,
   date,
   index,
   integer,
@@ -171,6 +172,24 @@ export const blockedDays = pgTable(
     createdBy: uuid("created_by"),
   },
   (table) => [index("blocked_days_holiday_idx").on(table.isPublicHoliday)],
+);
+
+/**
+ * A day's own booking limit, set from the admin calendar: how many jobs (in
+ * capacity units, as `orders.capacity_units` counts them) that day takes,
+ * in place of `capacity_config.max_capacity_per_day`. No row means the
+ * default applies; 0 takes no new bookings without blocking the day.
+ */
+export const dayCapacities = pgTable(
+  "day_capacities",
+  {
+    day: date("day").primaryKey(),
+    maxCapacity: integer("max_capacity").notNull(),
+
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedBy: uuid("updated_by"),
+  },
+  (table) => [check("day_capacities_not_negative", sql`${table.maxCapacity} >= 0`)],
 );
 
 /**

@@ -148,6 +148,13 @@
       "when": 1795080795216,
       "tag": "0020_profile_company",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1795081840973,
+      "tag": "0021_day_capacities",
+      "breakpoints": true
     }
   ]
 }

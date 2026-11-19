@@ -54,3 +54,7 @@
   100% { box-shadow: 0 0 0 0 #3f9e6300; }
 }
 .liveDot { animation: livePulse 2s infinite; }
+
+/* Calendar: a day opens its window (block it, give it its own limit). */
+.dayCell:hover { box-shadow: inset 0 0 0 2px #d7163526; }
+.dayCell:focus-visible { outline: 2px solid #d71635; outline-offset: -2px; }

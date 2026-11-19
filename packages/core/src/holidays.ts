@@ -76,6 +76,21 @@ export function publicHolidaysNRW(year: number): Holiday[] {
   return holidays.sort((left, right) => (left.date < right.date ? -1 : 1));
 }
 
+/**
+ * The NRW holidays between two days, inclusive, by day. Availability adds
+ * these to the blocked days itself, so a holiday is closed in any year
+ * without anything having been seeded for it.
+ */
+export function publicHolidaysBetween(from: CalendarDate, to: CalendarDate): Map<CalendarDate, Holiday> {
+  const out = new Map<CalendarDate, Holiday>();
+  const fromYear = Number(from.slice(0, 4));
+  const toYear = Number(to.slice(0, 4));
+  for (const holiday of publicHolidaysForRange(fromYear, toYear)) {
+    if (holiday.date >= from && holiday.date <= to) out.set(holiday.date, holiday);
+  }
+  return out;
+}
+
 /** Holidays across an inclusive range of years, for bulk seeding. */
 export function publicHolidaysForRange(fromYear: number, toYear: number): Holiday[] {
   if (toYear < fromYear) {
